@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Message Details</h2>
+<mat-dialog-content>
+    <div fxLayout="column" fxLayoutAlign="space-even start" class="setHeight">
+
+      <div class="fullWidth" fxLayout="row" fxLayoutAlign="space-around center">
+        <span> Subject: {{message.subject}}</span>
+        <span class="spacer">..... </span>
+        <span>Active status: {{message.isActive}}</span>
+      </div>
+
+      <div>{{message.body}}</div>
+
+    </div>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <span>
+    Posted by: {{message.postedBy.username}} @ {{message.datePosted | date: 'HH:mm   dd/MM/yyyy'}}
+  </span>
+  <span class="spacer"></span>
+  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+  <button mat-raised-button [mat-dialog-close]="message" color="primary">Archive</button>
+  <button mat-raised-button color="accent" mat-dialog-close>Close</button>
+</mat-dialog-actions>

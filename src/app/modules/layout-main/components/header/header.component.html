@@ -1,0 +1,44 @@
+<!-- <header fxLayout="row" fxLayoutAlign="space-between center">
+	<div class="container" fxFlex="20">Outer Logo Container</div>
+	<div  fxFlex="80">Outer Search field Container</div>
+	
+	<div  fxLayout="row" fxLayoutAlign="end center" fxFlex="20">
+		
+	</div>
+</header> -->
+
+<mat-toolbar color="primary">
+  <span>CTT Team Information Board</span>
+  
+  <span  class="feature-selectors">
+	  <button mat-raised-button color="accent" type="button" [routerLink]="'/home'">Home</button>
+	</span>
+
+  <span *ngIf="(isAuthenticated$ | async)" class="feature-selectors">
+	  <button mat-raised-button color="accent" type="button" [routerLink]="'/messages'">Messages</button>
+  </span>
+
+  <span *ngIf="(isAuthenticated$ | async)" class="feature-selectors">
+	  <button mat-raised-button color="accent" type="button" [routerLink]="'/rosta'">Rosta</button>
+  </span>
+  
+  <span *ngIf="(isAuthenticated$ | async)" class="feature-selectors">
+	  <button mat-raised-button color="accent" type="button" [routerLink]="'/library'">Library</button>
+	</span>
+  
+  <span *ngIf="(isAuthenticated$ | async)" class="feature-selectors">
+	  <button mat-raised-button color="accent" type="button" [routerLink]="'/admin'">Admin</button>
+	</span>
+  
+	<span class="example-spacer"></span>
+  <!-- <span >UserId: {{userId$ | async}}</span> -->
+  <span *ngIf="(isAuthenticated$ | async)">
+    <span >User: {{username$ | async}}</span>
+    <button mat-raised-button color="accent" type="button" (click)="onLogOut()">Logout</button>
+  </span >
+
+  <span *ngIf="!(isAuthenticated$ | async)">
+    <button mat-raised-button color="accent" type="button" [routerLink]="'/login'">LogIn</button>
+  </span>
+
+</mat-toolbar>

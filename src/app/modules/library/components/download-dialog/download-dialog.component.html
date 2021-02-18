@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>Selected File Details</h2>
+<mat-dialog-content>
+  <div fxLayout="column" fxLayoutAlign="space-even start" class="setHeight">
+
+    <div class="fullWidth" fxLayout="row" fxLayoutAlign="space-around center">
+      <span> Description: {{data.description}} <br></span>
+    </div>
+
+    <div>
+      <span> Filename:
+        {{data.file}}
+      </span>
+    </div>
+
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <span>
+    Uploaded: {{data.dateUploaded | date: 'dd/MM/yyyy'}}
+  </span>
+  <span class="spacer"></span>
+  <!-- The mat-dialog-close directive optionally accepts a value as a result for the dialog. -->
+  <button mat-raised-button [mat-dialog-close]="data" color="primary">Download</button>
+  <button mat-raised-button color="accent" mat-dialog-close>Cancel</button>
+</mat-dialog-actions>

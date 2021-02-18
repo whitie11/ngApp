@@ -1,0 +1,10 @@
+.spacer {flex: 1 1 auto;}
+
+.fullWidth {
+    width:100%;
+    background-color: rgb(215, 222, 253);
+}
+
+.setHeight {
+    height:250px;
+}
