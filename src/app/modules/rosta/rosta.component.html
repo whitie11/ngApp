@@ -6,38 +6,38 @@
 
     <ng-container matColumnDef="staff">
       <th mat-header-cell *matHeaderCellDef> Staff </th>
-      <td mat-cell *matCellDef="let element"> {{element.staff.username}} </td>
+      <td mat-cell *matCellDef="let element"> {{element[0]?.userName}} </td>
     </ng-container>
 
     <ng-container matColumnDef="day01am">
       <th mat-header-cell *matHeaderCellDef> AM </th>
-      <td mat-cell *matCellDef="let element"> {{element.day01am.dutyCode}} </td>
+      <td mat-cell *matCellDef="let element"> {{element[1][0]?.dutyCode}} </td>
     </ng-container>
 
     <ng-container matColumnDef="day01pm">
       <th mat-header-cell *matHeaderCellDef> PM </th>
-      <td mat-cell *matCellDef="let element"> {{element.day01am.dutyCode}} </td>
+      <td mat-cell *matCellDef="let element"> {{element[1][1]?.dutyCode}} </td>
     </ng-container>
 
     <ng-container matColumnDef="day02am">
       <th mat-header-cell *matHeaderCellDef> AM</th>
-      <td mat-cell *matCellDef="let element"> {{element.day02am.dutyCode}} </td>
+      <td mat-cell *matCellDef="let element"> {{element[1][2]?.dutyCode}} </td>
     </ng-container>
 
     <ng-container matColumnDef="day02pm">
       <th mat-header-cell *matHeaderCellDef> PM </th>
-      <td mat-cell *matCellDef="let element"> {{element.day02am.dutyCode}} </td>
+      <td mat-cell *matCellDef="let element"> {{element[1][3]?.dutyCode}} </td>
     </ng-container>
 
 
     <ng-container matColumnDef="day03am">
       <th mat-header-cell *matHeaderCellDef> AM</th>
-      <td mat-cell *matCellDef="let element"> {{element.day03am.dutyCode}} </td>
+      <td mat-cell *matCellDef="let element"> {{element[1][4]?.dutyCode}} </td>
     </ng-container>
 
     <ng-container matColumnDef="day03pm">
       <th mat-header-cell *matHeaderCellDef> PM </th>
-      <td mat-cell *matCellDef="let element"> {{element.day03am.dutyCode}} </td>
+      <td mat-cell *matCellDef="let element"> {{element[1][5]?.dutyCode}} </td>
     </ng-container>
 
     <!-- Header row first group -->
