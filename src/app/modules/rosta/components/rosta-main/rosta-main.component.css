@@ -1,0 +1,14 @@
+.mat-toolbar {
+    min-height: 30px !important; 
+    height: 30px !important;
+  }
+  
+  .mat-toolbar-row {
+    min-height: 30px !important; 
+    height: 30px !important;
+  }
+
+  ::ng-deep .mat-tab-label {
+    min-height: 30px !important; 
+    height: 30px !important;
+  } 

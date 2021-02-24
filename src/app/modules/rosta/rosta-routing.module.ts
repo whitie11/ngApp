@@ -1,14 +1,15 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { RostaMainComponent } from './components/rosta-main/rosta-main.component';
 import { RostaComponent } from './rosta.component';
 
 const routes: Routes = [
   {
     path: '',
     component: RostaComponent,
-    // children: [
-    //   { path: '', component: MessageMainComponent }
-    // ]
+    children: [
+      { path: '', component: RostaMainComponent }
+    ]
     }
 ];
 

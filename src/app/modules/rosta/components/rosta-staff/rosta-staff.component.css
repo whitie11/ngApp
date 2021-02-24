@@ -1,5 +1,4 @@
-
-  table {
+table {
     width: 100%;
 
   }
@@ -28,4 +27,13 @@ th.mat-header-cell, td.mat-cell {
 .mat-header-row, .mat-row {
     min-height: 30px;
     height: 30px;
+  }
+
+  .mat-menu-item {
+    height: 25px;
+    line-height: 25px;
+  }
+
+  ::ng-deep  .mat-menu-panel {
+    max-width: 400px !important;
   }

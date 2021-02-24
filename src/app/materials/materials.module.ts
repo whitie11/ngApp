@@ -16,6 +16,9 @@ import { NgxMatDateFnsDateModule } from 'ngx-mat-datefns-date-adapter';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
   declarations: [],
@@ -35,7 +38,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatDatepickerModule,
     NgxMatDateFnsDateModule,
     MatPaginatorModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTooltipModule,
+    MatTabsModule,
+    MatMenuModule
 
   ],
   exports: [
@@ -54,7 +60,10 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatDatepickerModule,
     NgxMatDateFnsDateModule,
     MatPaginatorModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTooltipModule,
+    MatTabsModule,
+    MatMenuModule
   ]
 })
 export class MaterialsModule { }

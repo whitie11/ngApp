@@ -21,7 +21,6 @@ export class RostaService {
   public  getDutiesFromDate(weekStart: Date, staffList: number[]): Observable<RotaRow[] > {
     const url = `${this.BASE_URL}/rosta/duty_list/`;
     const weekStartStr = weekStart.toLocaleDateString();
-    console.log('in get messages from date');
     return this.http.post<any>(url, {weekStartStr, staffList });
   }
 

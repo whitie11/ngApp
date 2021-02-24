@@ -1,0 +1,16 @@
+<mat-toolbar style="min-height:30px" color="primary">
+    <span>Shift Planner w/c:</span>
+  </mat-toolbar>
+
+<mat-tab-group>
+  <mat-tab label="Staff View">
+    <ng-template matTabContent>
+        <app-rosta-staff></app-rosta-staff>
+    </ng-template>
+  </mat-tab>
+  <mat-tab  label="Location View">
+    <ng-template matTabContent>
+      Content 2 - Loaded: {{getTimeLoaded(2) | date:'medium'}}
+    </ng-template>
+  </mat-tab>
+</mat-tab-group>
