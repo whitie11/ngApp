@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MyMessage } from '../modules/messages/models/message';
 import { NewMessageData } from '../modules/messages/models/newMessageData';
+import { Duty } from '../modules/rosta/models/duty';
 import { RotaRow } from '../modules/rosta/models/rotaRow';
 
 @Injectable({
@@ -22,6 +23,11 @@ export class RostaService {
     const url = `${this.BASE_URL}/rosta/duty_list/`;
     const weekStartStr = weekStart.toLocaleDateString();
     return this.http.post<any>(url, {weekStartStr, staffList });
+  }
+
+  public  getDuties(): Observable<Duty[] > {
+    const url = `${this.BASE_URL}/rosta/duties/`;
+    return this.http.get<Duty[]>(url);
   }
 
 }

@@ -1,16 +1,15 @@
 
 import { Action, createReducer, on } from '@ngrx/store';
 import { FileSaver } from 'src/app/modules/library/models/fileSaver';
-//  import { MyMessage } from 'src/app/modules/messages/models/message';
 import * as LibraryActions from './library.actions';
 
 export interface LibraryState {
-    isWaiting: boolean;
+    isWorking: boolean;
     savedFiles: FileSaver[];
 }
 
 export const initialState: LibraryState = {
-    isWaiting: false,
+    isWorking: false,
     savedFiles: [],
 };
 
@@ -23,7 +22,7 @@ const reducer = createReducer(
     on(LibraryActions.GetSavedFilesSuccess, (state: LibraryState, { files }) => {
         return { ...state, isWorking: false, savedFiles: files };
     }),
-    on(LibraryActions.GetsavedFiles, (state: LibraryState, { }) => {
+    on(LibraryActions.GetSavedFilesFailure, (state: LibraryState, { }) => {
         return { ...state, isWorking: false };
     }),
 );
