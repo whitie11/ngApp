@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { AppState } from 'src/app/store/app.states';
+import * as RostaActions from '../../../../store/rosta/rosta.actions';
+
 
 @Component({
   selector: 'app-rosta-nav',
@@ -7,9 +11,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RostaNavComponent implements OnInit {
 
-  constructor() { }
+  constructor(private store: Store<AppState>) { }
 
   ngOnInit(): void {
+    this.store.dispatch(RostaActions.GetDuties());
   }
 
 }

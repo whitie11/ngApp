@@ -1,22 +1,29 @@
 
   <div class="table-container">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <table mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
   
       <ng-container matColumnDef="staff">
         <th mat-header-cell *matHeaderCellDef> Staff </th>
-        <td mat-cell *matCellDef="let element"> {{element[0]?.userName}} </td>
+        <td mat-cell
+        [ngClass]="'rowLabel'"
+        *matCellDef="let element"
+         > {{element[0]?.userName}} </td>
       </ng-container>
   
       <ng-container *ngFor="let i = index; let column of displayedColumns2" 
       matColumnDef="{{column}}">
         <th mat-header-cell *matHeaderCellDef 
-        [style.background-color]=" setBackgroundColourCell(i) "> {{setAMorPM(i)}} </th>
+        [style.background-color]=" setBackgroundColourCell(i, 0 ) "> {{setAMorPM(i)}} </th>
+        
         <td mat-cell 
-        (click)="cellClicked(element[0]?.userName,i)"
+        (click)="cellClicked(element[0],i)"
         [matMenuTriggerFor]="appMenu"
         [matMenuTriggerData]="{staffId: element[0], col: i}"
+        (menuClosed)="menuClosed()"
         [matTooltip]=" element[1][i]?.dutyType"
-        [style.background-color]=" setBackgroundColourCell(i) " *matCellDef="let element"> {{element[1][i]?.dutyCode}} </td>
+        [style.background-color]=" setBackgroundColourCell(i, element[0].staffId) "
+        [ngClass]="isSelected(element[0].staffId, i) ? 'highlight' : 'notHighlight'" 
+        *matCellDef="let element"> {{element[1][i]?.dutyCode}} </td>
       </ng-container>
   
       <!-- Header row first group -->
@@ -45,11 +52,10 @@
   <mat-menu #appMenu="matMenu">
     <ng-template matMenuContent let-staffId="staffId" let-col="col">
       <span>Add Duty</span>
+
       <button mat-menu-item
-      (click)="menuClick(staffId, col, 'duty1')"
-      >Duty 1 longer duty name stretching the menu?</button>
-      <button mat-menu-item
-      (click)="menuClick(staffId, col, 'duty2')"
-      >Duty 2</button>
+      *ngFor="let k = index; let duty of duties" 
+      (click)="menuClick(staffId, col, duty.dutyCode)"
+      >{{duty.dutyType}}</button>
     </ng-template>
   </mat-menu>

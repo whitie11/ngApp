@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { Store } from '@ngrx/store';
 import { parse } from 'date-fns';
 import { Observable } from 'rxjs';
-import { User } from 'src/app/models/user';
 import { RostaService } from 'src/app/services/rosta.service';
+import { AppState } from 'src/app/store/app.states';
 import { Duty } from '../../models/duty';
-import { Rota } from '../../models/rota';
 import { RotaRow } from '../../models/rotaRow';
+import * as fromRostaSelectors from '../../../../store/rosta/rosta.selectors';
+import { Staff } from 'src/app/models/staff';
+
 
 @Component({
   selector: 'app-rosta-staff',
@@ -14,6 +17,9 @@ import { RotaRow } from '../../models/rotaRow';
   styleUrls: ['./rosta-staff.component.css']
 })
 export class RostaStaffComponent implements OnInit {
+
+  @ViewChild(MatTable)
+  table!: MatTable<any>;
 
   rotaArray: RotaRow[] = [];
   rotaArray$!: Observable<RotaRow[]>;
@@ -27,8 +33,14 @@ export class RostaStaffComponent implements OnInit {
   headerRowDef: string[] = ['h0'];
   headerRowDef2: string[] = [];
   headerRowDay: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  duties: Duty[] = [];
+  duties$!: Observable<Duty[]>;
+
+  selectedSlot: [number, number] = [-1, -1];
+
   constructor(
     private rostaService: RostaService,
+    private store: Store<AppState>
   ) {
 
     this.rotaArray$ = this.rostaService.getDutiesFromDate(this.weekStart, this.staffList);
@@ -41,6 +53,11 @@ export class RostaStaffComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.duties$ = this.store.select(fromRostaSelectors.dutiesFromStore);
+    this.duties$.subscribe(d => {
+      this.duties = d;
+    });
+
   }
 
   setDesplayedColumns(ra: RotaRow[]) {
@@ -67,7 +84,7 @@ export class RostaStaffComponent implements OnInit {
     }
   }
 
-  setBackgroundColourCell(c: number) {
+  setBackgroundColourCell(c: number, s: any) {
     if (c > 9 && c < 14 || c > 23) {
       return '#f2ebff';
     }
@@ -87,7 +104,15 @@ export class RostaStaffComponent implements OnInit {
 
   }
 
-  cellClicked(n: string, i: number) {
+  cellClicked(s: Staff, i: number) {
+    if (this.selectedSlot[0] === s.staffId && i === this.selectedSlot[1]) {
+      this.selectedSlot = [-1, -1];
+    }
+    else {
+      this.selectedSlot = [s.staffId, i];
+    }
+    console.log(this.selectedSlot[0] + ',' + this.selectedSlot[1]);
+
     let session = '';
     let dayNo = 0;
 
@@ -108,11 +133,24 @@ export class RostaStaffComponent implements OnInit {
 
     }
 
-    console.log(n + ' ' + this.headerRowDay[dayNo] + ' ' + session);
+    console.log(s.userName + ' ' + this.headerRowDay[dayNo] + ' ' + session);
   }
 
-  menuClick(staffId: any, col: number , duty: string) {
+  menuClick(staffId: any, col: number, duty: string) {
     console.log('Staff Id = ' + staffId.userName + ' index = ' + col + ' => ' + duty);
+  }
+
+  menuClosed() {
+    console.log('Menu closed!');
+    this.selectedSlot = [-1, -1];
+
+  }
+
+  isSelected(s: number, i: number) {
+    if (i === this.selectedSlot[1] && s === this.selectedSlot[0]) {
+      return true;
+    }
+    else { return false; }
   }
 
 }

@@ -18,10 +18,16 @@ table {
   flex: 1 1 auto;
 }
 
-th.mat-header-cell, td.mat-cell {
+th.mat-header-cell {
     text-align: center;
     border: 1px solid #CCC;
     padding: 0 !important;
+}
+
+ td.mat-cell {
+  text-align: center;
+  /* border: 1px solid #CCC; */
+  padding: 0 !important;
 }
 
 .mat-header-row, .mat-row {
@@ -36,4 +42,17 @@ th.mat-header-cell, td.mat-cell {
 
   ::ng-deep  .mat-menu-panel {
     max-width: 400px !important;
+  }
+
+  .highlight {
+    /* border: 2px   blue; */
+border: 2px double blue;
+  }
+
+  .notHighlight {
+    border: 1px solid #CCC;
+  }
+
+  .rowLabel {
+    border: 1px solid #CCC;
   }

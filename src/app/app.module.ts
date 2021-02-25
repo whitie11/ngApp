@@ -24,6 +24,7 @@ import { SharedModule } from './shared/shared.module';
 import { MessageEffects } from './store/message/message.effects';
 import { TokenInterceptor } from './services/token_interceptor';
 import { LibraryEffects } from './store/library/library.effects';
+import { RostaEffects } from './store/rosta/rosta.effects';
 // import { MAT_DATE_LOCALE } from '@angular/material/core';
 // import { CommonModule } from '@angular/common';
 
@@ -39,7 +40,7 @@ import { LibraryEffects } from './store/library/library.effects';
     SharedModule,
 
     StoreModule.forRoot( reducers, { }),
-    EffectsModule.forRoot([AuthEffects, MessageEffects, LibraryEffects]),
+    EffectsModule.forRoot([AuthEffects, MessageEffects, LibraryEffects, RostaEffects]),
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument(),
   ],

@@ -14,7 +14,7 @@ import { RostaService } from 'src/app/services/rosta.service';
 
 @Injectable()
 
-export class LibraryEffects {
+export class RostaEffects {
 
     constructor(
         private action$: Actions,
