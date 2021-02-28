@@ -11,10 +11,13 @@ import * as RostaActions from '../../../../store/rosta/rosta.actions';
 })
 export class RostaNavComponent implements OnInit {
 
-  constructor(private store: Store<AppState>) { }
+  constructor(private store: Store<AppState>) {}
 
   ngOnInit(): void {
-    this.store.dispatch(RostaActions.GetDuties());
+    // this.store.dispatch(RostaActions.GetDuties());
+
   }
+
+
 
 }

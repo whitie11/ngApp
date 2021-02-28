@@ -7,6 +7,11 @@ export const SetDateFrom = createAction(
   props<{ dateFrom: Date}>()
 );
 
+export const SetStaffIdList = createAction(
+  '[Rosta] Set staffLst',
+  props<{ staffIdList: number[]}>()
+);
+
 
 export const GetDuties = createAction(
   '[Rosta] Get duties',

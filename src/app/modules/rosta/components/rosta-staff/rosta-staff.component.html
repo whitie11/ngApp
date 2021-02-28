@@ -18,7 +18,7 @@
         <td mat-cell 
         (click)="cellClicked(element[0],i)"
         [matMenuTriggerFor]="appMenu"
-        [matMenuTriggerData]="{staffId: element[0], col: i}"
+        [matMenuTriggerData]="{staff: element[0], col: i}"
         (menuClosed)="menuClosed()"
         [matTooltip]=" element[1][i]?.dutyType"
         [style.background-color]=" setBackgroundColourCell(i, element[0].staffId) "
@@ -29,7 +29,7 @@
       <!-- Header row first group -->
       <ng-container matColumnDef="h0">
         <th mat-header-cell *matHeaderCellDef [attr.colspan]="1">
-  
+         From:{{weekStart | date: 'dd/MM/yy'}}
         </th>
       </ng-container>
   
@@ -50,12 +50,12 @@
   </div>
 
   <mat-menu #appMenu="matMenu">
-    <ng-template matMenuContent let-staffId="staffId" let-col="col">
-      <span>Add Duty</span>
+    <ng-template matMenuContent let-staff="staff" let-col="col">
+      <span>Edit Duty</span>
 
       <button mat-menu-item
       *ngFor="let k = index; let duty of duties" 
-      (click)="menuClick(staffId, col, duty.dutyCode)"
+      (click)="menuClick(staff, col, duty)"
       >{{duty.dutyType}}</button>
     </ng-template>
   </mat-menu>

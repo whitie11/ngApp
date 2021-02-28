@@ -25,6 +25,8 @@ import { MessageEffects } from './store/message/message.effects';
 import { TokenInterceptor } from './services/token_interceptor';
 import { LibraryEffects } from './store/library/library.effects';
 import { RostaEffects } from './store/rosta/rosta.effects';
+import { DateAdapter } from '@angular/material/core';
+import { CustomDateAdapter } from './utilities/customDateAdapter';
 // import { MAT_DATE_LOCALE } from '@angular/material/core';
 // import { CommonModule } from '@angular/common';
 
@@ -54,7 +56,7 @@ import { RostaEffects } from './store/rosta/rosta.effects';
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
       multi: true
-    }
+    },
     // {
     //   provide: MAT_DATE_LOCALE,
     //   useValue: 'en-GB',

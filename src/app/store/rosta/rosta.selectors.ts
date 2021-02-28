@@ -6,3 +6,10 @@ export const selectRostaState = createFeatureSelector<RostaState>('rosta');
 export const dutiesFromStore = createSelector(selectRostaState,
     (state: RostaState) => state.duties);
 
+export const dateFromStore = createSelector(selectRostaState,
+        (state: RostaState) => state.dateFrom);
+
+export const staffIdsFromStore = createSelector(selectRostaState,
+            (state: RostaState) => state.staffIdList);
+
+

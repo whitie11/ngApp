@@ -9,6 +9,7 @@ import { Duty } from '../../models/duty';
 import { RotaRow } from '../../models/rotaRow';
 import * as fromRostaSelectors from '../../../../store/rosta/rosta.selectors';
 import { Staff } from 'src/app/models/staff';
+import { Alloc } from '../../models/alloc';
 
 
 @Component({
@@ -24,8 +25,11 @@ export class RostaStaffComponent implements OnInit {
   rotaArray: RotaRow[] = [];
   rotaArray$!: Observable<RotaRow[]>;
 
-  staffList = [2, 1, 3, 5];
-  weekStart = parse('2021-01-08', 'yyyy-MM-dd', new Date());
+  staffIdList!: number[];
+  staffIdList$!: Observable<number[]>;
+
+  weekStart!: Date;
+  weekStart$!: Observable<Date>;
 
   dataSource: any;
   displayedColumns: string[] = [];
@@ -38,25 +42,55 @@ export class RostaStaffComponent implements OnInit {
 
   selectedSlot: [number, number] = [-1, -1];
 
+  result: any | null;
+
+
   constructor(
     private rostaService: RostaService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
   ) {
-
-    this.rotaArray$ = this.rostaService.getDutiesFromDate(this.weekStart, this.staffList);
-    this.rotaArray$.subscribe(r => {
-      this.rotaArray = r;
-      this.setDesplayedColumns(r);
-      this.dataSource = new MatTableDataSource<RotaRow>(this.rotaArray);
-    });
-
-  }
-
-  ngOnInit(): void {
     this.duties$ = this.store.select(fromRostaSelectors.dutiesFromStore);
     this.duties$.subscribe(d => {
       this.duties = d;
     });
+
+    this.staffIdList$ = this.store.select(fromRostaSelectors.staffIdsFromStore);
+    this.staffIdList$.subscribe(s => {
+      this.staffIdList = s;
+      this.resetTableData();
+    });
+
+    this.weekStart$ = this.store.select(fromRostaSelectors.dateFromStore);
+    this.weekStart$.subscribe(s => {
+      this.weekStart = s;
+      this.resetTableData();
+    });
+
+
+  }
+
+  resetTableData() {
+    if (this.weekStart && this.staffIdList) {
+      this.rotaArray$ = this.rostaService.getDutiesFromDate(this.weekStart, this.staffIdList);
+      this.rotaArray$.subscribe(r => {
+        this.rotaArray = r;
+        // this.setDesplayedColumns(r);
+        // this.dataSource = new MatTableDataSource();
+        console.log('Resetting table Data');
+        this.dataSource = new MatTableDataSource<RotaRow>(this.rotaArray);
+      });
+    }
+  }
+
+  ngOnInit(): void {
+    this.rotaArray$ = this.rostaService.getDutiesFromDate(this.weekStart, this.staffIdList);
+    this.rotaArray$.subscribe(r => {
+      this.rotaArray = r;
+      this.setDesplayedColumns(r);
+      console.log('Setting table date');
+      this.dataSource = new MatTableDataSource<RotaRow>(this.rotaArray);
+    });
+
 
   }
 
@@ -111,33 +145,69 @@ export class RostaStaffComponent implements OnInit {
     else {
       this.selectedSlot = [s.staffId, i];
     }
-    console.log(this.selectedSlot[0] + ',' + this.selectedSlot[1]);
+    // console.log(this.selectedSlot[0] + ',' + this.selectedSlot[1]);
+
+    // let session = '';
+    // let dayNo = 0;
+
+    // if (i % 2) {
+    //   session = 'PM';
+    // }
+    // else {
+    //   session = 'AM';
+    // }
+
+    // if (i > 1) {
+    //   if (i % 2) {
+    //     dayNo = (i / 2) - 0.5;
+    //   }
+    //   else {
+    //     dayNo = (i / 2);
+    //   }
+
+    // }
+
+    // console.log(s.userName + ' ' + this.headerRowDay[dayNo] + ' ' + session);
+  }
+
+  menuClick(staff: Staff, col: number, duty: Duty) {
+    console.log('Staff Id = ' + staff.userName + ' index = ' + col + ' => ' + duty.dutyCode);
 
     let session = '';
     let dayNo = 0;
 
-    if (i % 2) {
+    if (col % 2) {
       session = 'PM';
     }
     else {
       session = 'AM';
     }
 
-    if (i > 1) {
-      if (i % 2) {
-        dayNo = (i / 2) - 0.5;
+    if (col > 1) {
+      if (col % 2) {
+        dayNo = (col / 2) - 0.5;
       }
       else {
-        dayNo = (i / 2);
+        dayNo = (col / 2);
       }
-
     }
+    const dutyDate = new Date(new Date(this.weekStart).setDate(this.weekStart.getDate() + dayNo)).toLocaleDateString();
 
-    console.log(s.userName + ' ' + this.headerRowDay[dayNo] + ' ' + session);
-  }
+    // console.log('Session= ' + session);
+    // console.log('DayInc = ' + dayNo);
+    // console.log('Date = ' + dutyDate);
+    const alloc: Alloc = {
+      date: dutyDate,
+      session,
+      staff: staff.staffId,
+      duty: duty.dutyId
+    };
+    this.rostaService.saveOrEditDuty(alloc).subscribe( data => {
+      this.result = data;
+      console.log('result = ' + data);
+      this.resetTableData();
+    });
 
-  menuClick(staffId: any, col: number, duty: string) {
-    console.log('Staff Id = ' + staffId.userName + ' index = ' + col + ' => ' + duty);
   }
 
   menuClosed() {

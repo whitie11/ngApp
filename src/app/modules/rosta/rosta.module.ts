@@ -8,14 +8,22 @@ import { RostaNavComponent } from './components/rosta-nav/rosta-nav.component';
 import { RostaMainComponent } from './components/rosta-main/rosta-main.component';
 import { RostaStaffComponent } from './components/rosta-staff/rosta-staff.component';
 import { RostaLocationComponent } from './components/rosta-location/rosta-location.component';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import { CustomDateAdapter } from 'src/app/utilities/customDateAdapter';
+import { StaffPickerDialogComponent } from './components/staff-picker-dialog/staff-picker-dialog.component';
+import { LocationPickerDialogComponent } from './components/location-picker-dialog/location-picker-dialog.component';
 
 
 @NgModule({
-  declarations: [RostaComponent, RostaNavComponent, RostaMainComponent, RostaStaffComponent, RostaLocationComponent],
+  declarations: [RostaComponent, RostaNavComponent, RostaMainComponent, RostaStaffComponent, RostaLocationComponent, StaffPickerDialogComponent, LocationPickerDialogComponent],
   imports: [
     CommonModule,
     SharedModule,
     RostaRoutingModule
+  ],
+  providers: [
+   { provide: DateAdapter, useClass: CustomDateAdapter },
+   { provide: MAT_DATE_LOCALE, useValue: 'en-GB'}
   ]
 })
 export class RostaModule { }

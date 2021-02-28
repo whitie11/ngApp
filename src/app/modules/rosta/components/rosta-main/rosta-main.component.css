@@ -1,6 +1,6 @@
 .mat-toolbar {
-    min-height: 30px !important; 
-    height: 30px !important;
+    min-height: 40px !important; 
+    height: 40px !important;
   }
   
   .mat-toolbar-row {
@@ -12,3 +12,16 @@
     min-height: 30px !important; 
     height: 30px !important;
   } 
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+ .button-width {
+    width: 200px ;
+    margin-left: 10px;
+  }
+
+  .dateInput {
+    padding-left: 10px;
+  }
