@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
-import { parse } from 'date-fns';
 import { Observable } from 'rxjs';
 import { RostaService } from 'src/app/services/rosta.service';
 import { AppState } from 'src/app/store/app.states';
@@ -10,7 +9,7 @@ import { RotaRow } from '../../models/rotaRow';
 import * as fromRostaSelectors from '../../../../store/rosta/rosta.selectors';
 import { Staff } from 'src/app/models/staff';
 import { Alloc } from '../../models/alloc';
-
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-rosta-staff',
@@ -36,7 +35,7 @@ export class RostaStaffComponent implements OnInit {
   displayedColumns2: string[] = [];
   headerRowDef: string[] = ['h0'];
   headerRowDef2: string[] = [];
-  headerRowDay: string[] = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  headerRowDay: string[] = [];
   duties: Duty[] = [];
   duties$!: Observable<Duty[]>;
 
@@ -48,6 +47,7 @@ export class RostaStaffComponent implements OnInit {
   constructor(
     private rostaService: RostaService,
     private store: Store<AppState>,
+    @Inject(LOCALE_ID) private locale: string
   ) {
     this.duties$ = this.store.select(fromRostaSelectors.dutiesFromStore);
     this.duties$.subscribe(d => {
@@ -63,10 +63,20 @@ export class RostaStaffComponent implements OnInit {
     this.weekStart$ = this.store.select(fromRostaSelectors.dateFromStore);
     this.weekStart$.subscribe(s => {
       this.weekStart = s;
+      this.setDayLabelRow(s);
       this.resetTableData();
     });
+  }
 
-
+  setDayLabelRow(wc: Date) {
+    let dateString = '';
+    let dutyDate = null;
+    this.headerRowDay = [];
+    for (let i = 0; i < 14; i++) {
+      dutyDate = new Date(new Date(this.weekStart).setDate(this.weekStart.getDate() + i));
+      dateString = formatDate(dutyDate, 'E dd/MM', this.locale);
+      this.headerRowDay.push(dateString);
+    }
   }
 
   resetTableData() {
@@ -145,29 +155,6 @@ export class RostaStaffComponent implements OnInit {
     else {
       this.selectedSlot = [s.staffId, i];
     }
-    // console.log(this.selectedSlot[0] + ',' + this.selectedSlot[1]);
-
-    // let session = '';
-    // let dayNo = 0;
-
-    // if (i % 2) {
-    //   session = 'PM';
-    // }
-    // else {
-    //   session = 'AM';
-    // }
-
-    // if (i > 1) {
-    //   if (i % 2) {
-    //     dayNo = (i / 2) - 0.5;
-    //   }
-    //   else {
-    //     dayNo = (i / 2);
-    //   }
-
-    // }
-
-    // console.log(s.userName + ' ' + this.headerRowDay[dayNo] + ' ' + session);
   }
 
   menuClick(staff: Staff, col: number, duty: Duty) {
@@ -191,18 +178,15 @@ export class RostaStaffComponent implements OnInit {
         dayNo = (col / 2);
       }
     }
-    const dutyDate = new Date(new Date(this.weekStart).setDate(this.weekStart.getDate() + dayNo)).toLocaleDateString();
-
-    // console.log('Session= ' + session);
-    // console.log('DayInc = ' + dayNo);
-    // console.log('Date = ' + dutyDate);
+    const dutyDate = new Date(new Date(this.weekStart).setDate(this.weekStart.getDate() + dayNo));
+    const dateString = formatDate(dutyDate, 'yyyy-MM-dd', this.locale);
     const alloc: Alloc = {
-      date: dutyDate,
+      date: dateString,
       session,
       staff: staff.staffId,
       duty: duty.dutyId
     };
-    this.rostaService.saveOrEditDuty(alloc).subscribe( data => {
+    this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
       this.result = data;
       console.log('result = ' + data);
       this.resetTableData();

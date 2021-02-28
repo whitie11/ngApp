@@ -3,7 +3,7 @@
     <table mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
   
       <ng-container matColumnDef="staff">
-        <th mat-header-cell *matHeaderCellDef> Staff </th>
+        <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell
         [ngClass]="'rowLabel'"
         *matCellDef="let element"
@@ -29,14 +29,16 @@
       <!-- Header row first group -->
       <ng-container matColumnDef="h0">
         <th mat-header-cell *matHeaderCellDef [attr.colspan]="1">
-         From:{{weekStart | date: 'dd/MM/yy'}}
+        
         </th>
       </ng-container>
   
       <!-- Header row  -->
       <ng-container *ngFor="let j = index; let columnH of headerRowDef2" 
       matColumnDef="{{columnH}}">
-        <th mat-header-cell [style.background-color]=" setBackgroundColourHeader(j) "  *matHeaderCellDef [attr.colspan]="2"> {{ headerRowDay[j] }} </th>
+        <th mat-header-cell [style.background-color]=" setBackgroundColourHeader(j) "  
+        *matHeaderCellDef [attr.colspan]="2">
+        {{ headerRowDay[j] }} </th>
       </ng-container>
   
       <tr mat-header-row *matHeaderRowDef="headerRowDef"></tr>
