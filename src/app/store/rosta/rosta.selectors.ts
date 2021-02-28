@@ -7,9 +7,11 @@ export const dutiesFromStore = createSelector(selectRostaState,
     (state: RostaState) => state.duties);
 
 export const dateFromStore = createSelector(selectRostaState,
-        (state: RostaState) => state.dateFrom);
+    (state: RostaState) => state.dateFrom);
 
 export const staffIdsFromStore = createSelector(selectRostaState,
-            (state: RostaState) => state.staffIdList);
+    (state: RostaState) => state.staffIdList);
 
+export const dutyIdsFromStore = createSelector(selectRostaState,
+    (state: RostaState) => state.dutyIdList);
 

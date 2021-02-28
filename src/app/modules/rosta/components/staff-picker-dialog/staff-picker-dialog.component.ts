@@ -16,7 +16,8 @@ export class StaffPickerDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<StaffPickerDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: Staff[],
-              private store: Store<AppState> ) {
+              private store: Store<AppState>
+              ) {
     this.store.select(fromRostaSelectors.staffIdsFromStore).subscribe( ss => {
       this.selectedStaff = ss;
     });

@@ -8,8 +8,13 @@ export const SetDateFrom = createAction(
 );
 
 export const SetStaffIdList = createAction(
-  '[Rosta] Set staffLst',
+  '[Rosta] Set staffList',
   props<{ staffIdList: number[]}>()
+);
+
+export const SetDutyIdList = createAction(
+  '[Rosta] Set dutyList',
+  props<{ dutyIdList: number[]}>()
 );
 
 
@@ -26,4 +31,6 @@ export const GetDutiesFailure = createAction(
   '[Rosta] Get duties failure',
   props<{ error: any}>()
 );
+
+
 

@@ -8,6 +8,8 @@ import { AppState } from 'src/app/store/app.states';
 import { StaffPickerDialogComponent } from '../staff-picker-dialog/staff-picker-dialog.component';
 import * as RostaActions from '../../../../store/rosta/rosta.actions';
 import * as fromRostaSelectors from '../../../../store/rosta/rosta.selectors';
+import { LocationPickerDialogComponent } from '../location-picker-dialog/location-picker-dialog.component';
+import { Duty } from '../../models/duty';
 
 @Component({
   selector: 'app-rosta-main',
@@ -19,15 +21,7 @@ export class RostaMainComponent implements OnInit {
   tabLoadTimes: Date[] = [];
   staffList: Staff[] = [];
   staffList$!: Observable<Staff[]>;
-
-
-  getTimeLoaded(index: number) {
-    if (!this.tabLoadTimes[index]) {
-      this.tabLoadTimes[index] = new Date();
-    }
-
-    return this.tabLoadTimes[index];
-  }
+  dutyList: Duty[] = [];
 
   constructor(public dialog: MatDialog,
               private rostaService: RostaService,
@@ -40,14 +34,13 @@ export class RostaMainComponent implements OnInit {
 
     this.store.dispatch(RostaActions.SetDateFrom({dateFrom: this.weekCommencing}));
 
-    // this.store.select(fromRostaSelectors.dateFromStore).subscribe(d => {
-    //   this.weekCommencing = d;
-    // });
-
-
     this.staffList$ = this.rostaService.getStaffList();
     this.staffList$.subscribe(list => {
       this.staffList = list;
+    });
+
+    this.rostaService.getDutyList().subscribe(list => {
+      this.dutyList = list;
     });
 
     this.store.dispatch(RostaActions.GetDuties());
@@ -78,6 +71,20 @@ export class RostaMainComponent implements OnInit {
       console.log('Selected Staff ' + result);
       if ( result && result.length > 0) {
       this.store.dispatch(RostaActions.SetStaffIdList({ staffIdList: result }));
+      }
+    });
+  }
+
+    openDutyPickerDialog(): void {
+    const dialogRefDutyPicker = this.dialog.open(LocationPickerDialogComponent, {
+      width: '250px',
+      data: this.dutyList
+    });
+
+    dialogRefDutyPicker.afterClosed().subscribe(result => {
+      console.log('Selected Duties ' + result);
+      if ( result && result.length > 0) {
+      this.store.dispatch(RostaActions.SetDutyIdList({ dutyIdList: result }));
       }
     });
   }

@@ -4,3 +4,6 @@ import { Duty } from './duty';
 
 export type RotaRow = [Staff, Duty[]];
 
+export type RotaRowDutyView = [Duty, Staff[][]];
+
+

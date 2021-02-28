@@ -6,7 +6,7 @@ import { MyMessage } from '../modules/messages/models/message';
 import { NewMessageData } from '../modules/messages/models/newMessageData';
 import { Alloc } from '../modules/rosta/models/alloc';
 import { Duty } from '../modules/rosta/models/duty';
-import { RotaRow } from '../modules/rosta/models/rotaRow';
+import { RotaRow, RotaRowDutyView } from '../modules/rosta/models/rotaRow';
 
 @Injectable({
   providedIn: 'root'
@@ -15,17 +15,18 @@ export class RostaService {
   private BASE_URL = 'http://localhost:8000';
   constructor(private http: HttpClient) { }
 
-//   public  getAllMessages(): Observable<MyMessage[] > {
-//     const url = `${this.BASE_URL}/messages/all_messages/`;
-//     const result = this.http.get<MyMessage[]>(url);
-//     return  result;
-//   }
-
   public  getDutiesFromDate(weekStart: Date, staffList: number[]): Observable<RotaRow[] > {
     const url = `${this.BASE_URL}/rosta/duty_list/`;
     const weekStartStr = weekStart.toLocaleDateString();
     return this.http.post<any>(url, {weekStartStr, staffList });
   }
+
+  public  getStaffPerDutyFromDate(weekStart: Date, dutyIdArray: number[]): Observable<RotaRowDutyView[] > {
+    const url = `${this.BASE_URL}/rosta/duty_staff/`;
+    const weekStartStr = weekStart.toLocaleDateString();
+    return this.http.post<any>(url, {weekStartStr, dutyIdArray });
+  }
+
 
   public saveOrEditDuty(alloc: Alloc): Observable<Alloc> {
     const url = `${this.BASE_URL}/alloc/`;
@@ -41,6 +42,11 @@ export class RostaService {
   public  getStaffList(): Observable<Staff[] > {
     const url = `${this.BASE_URL}/staff/`;
     return this.http.get<Staff[]>(url);
+  }
+
+  public  getDutyList(): Observable<Duty[] > {
+    const url = `${this.BASE_URL}/duty/`;
+    return this.http.get<Duty[]>(url);
   }
 
 }

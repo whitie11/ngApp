@@ -7,6 +7,7 @@ export interface RostaState {
     duties: Duty[];
     dateFrom: Date;
     staffIdList: number[];
+    dutyIdList: number[];
 }
 
 export const initialState: RostaState = {
@@ -14,6 +15,7 @@ export const initialState: RostaState = {
     duties: [],
     dateFrom: new Date('2021,1,8'),
     staffIdList: [1, 2, 3, 5],
+    dutyIdList: [1, 2, 3]
 };
 
 
@@ -24,6 +26,9 @@ const reducer = createReducer(
     }),
     on(RostaActions.SetStaffIdList, (state: RostaState, { staffIdList }) => {
         return { ...state, staffIdList, };
+    }),
+    on(RostaActions.SetDutyIdList, (state: RostaState, { dutyIdList }) => {
+        return { ...state, dutyIdList, };
     }),
     on(RostaActions.GetDuties, (state: RostaState, { }) => {
         return { ...state, isWorking: true };

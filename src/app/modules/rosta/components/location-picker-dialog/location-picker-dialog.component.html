@@ -1,1 +1,12 @@
-<p>location-picker-dialog works!</p>
+<h1 mat-dialog-title>Select Shift Type</h1>
+<div mat-dialog-content>
+  <mat-selection-list #list [(ngModel)]="selectedDuties">
+    <mat-list-option *ngFor="let duty of data" [value]="duty.dutyId">
+      {{duty.dutyType}}
+    </mat-list-option>
+</mat-selection-list>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="selectedDuties" cdkFocusInitial>Ok</button>
+</div>

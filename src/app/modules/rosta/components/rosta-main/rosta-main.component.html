@@ -12,6 +12,8 @@
       <mat-datepicker #picker startView="month"></mat-datepicker>
       <button class="button-width" mat-raised-button (click)="picker.open()">Change Date</button>
       <button class="button-width" mat-raised-button  (click)="openSPDialog()">Select Staff</button>
+      <button class="button-width" mat-raised-button  (click)="openDutyPickerDialog()">Select Duty</button>
+     
       <span class="spacer"></span>
   </mat-toolbar>
 
@@ -23,7 +25,8 @@
   </mat-tab>
   <mat-tab  label="Location View">
     <ng-template matTabContent>
-      Content 2 - Loaded: {{getTimeLoaded(2) | date:'medium'}}
+     <app-rosta-location></app-rosta-location>
     </ng-template>
   </mat-tab>
 </mat-tab-group>
+
