@@ -7,12 +7,13 @@ import { NewMessageData } from '../modules/messages/models/newMessageData';
 import { Alloc } from '../modules/rosta/models/alloc';
 import { Duty } from '../modules/rosta/models/duty';
 import { RotaRow, RotaRowDutyView } from '../modules/rosta/models/rotaRow';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RostaService {
-  private BASE_URL = 'http://localhost:8000';
+  private BASE_URL = environment.urls.BASE_URL;
   constructor(private http: HttpClient) { }
 
   public  getDutiesFromDate(weekStart: Date, staffList: number[]): Observable<RotaRow[] > {

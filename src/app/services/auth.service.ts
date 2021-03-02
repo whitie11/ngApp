@@ -1,14 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-// import { LognPayload } from '../models/login-payload';
-
-
-
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class AuthService {
-  private BASE_URL = 'http://localhost:8000';
+  private BASE_URL = environment.urls.BASE_URL;
 
   constructor(private http: HttpClient) {}
 

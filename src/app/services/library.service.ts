@@ -4,12 +4,13 @@ import { Observable } from 'rxjs';
 import { FileSaver } from '../modules/library/models/fileSaver';
 
 import { saveAs } from 'file-saver';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LibraryService {
-  private BASE_URL = 'http://localhost:8000';
+  private BASE_URL = environment.urls.BASE_URL;
   constructor(private http: HttpClient) { }
 
   public  getSavedFiles(): Observable<FileSaver[] > {
