@@ -10,6 +10,8 @@ import * as fromRostaSelectors from '../../../../store/rosta/rosta.selectors';
 import { Staff } from 'src/app/models/staff';
 import { Alloc } from '../../models/alloc';
 import { formatDate } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { ShiftStaffDialogComponent } from '../shift-staff-dialog/shift-staff-dialog.component';
 
 @Component({
   selector: 'app-rosta-location',
@@ -48,10 +50,14 @@ export class RostaLocationComponent implements OnInit {
 
   selectedSlot: [number, number] = [-1, -1];
 
+  //  selectedStaffIdList: number[] = [];
+  preSelectedStaffIdList: number[] = [];
+
   result: any | null;
 
 
   constructor(
+    public dialog: MatDialog,
     private rostaService: RostaService,
     private store: Store<AppState>,
     @Inject(LOCALE_ID) private locale: string
@@ -65,6 +71,11 @@ export class RostaLocationComponent implements OnInit {
     this.staffIdList$.subscribe(s => {
       this.staffIdList = s;
       this.resetTableData();
+    });
+
+    this.staff$ = this.rostaService.getStaffList();
+    this.staff$.subscribe(list => {
+      this.staff = list;
     });
 
     this.dutyIdArray$ = this.store.select(fromRostaSelectors.dutyIdsFromStore);
@@ -97,9 +108,7 @@ export class RostaLocationComponent implements OnInit {
       this.rotaArrayDV$ = this.rostaService.getStaffPerDutyFromDate(this.weekStart, this.dutyIdArray);
       this.rotaArrayDV$.subscribe(r => {
         this.rotaArrayDV = r;
-        // this.setDesplayedColumns(r);
-        // this.dataSource = new MatTableDataSource();
-        console.log('Resetting table Data');
+        console.log('Resetting table Data'); // TODO remove all console.log's
         this.dataSource = new MatTableDataSource<RotaRowDutyView>(this.rotaArrayDV);
       });
     }
@@ -164,74 +173,49 @@ export class RostaLocationComponent implements OnInit {
   getStaffArray(staffArray: Staff[]) {
     let res = '';
     if (staffArray) {
-      for (const s of staffArray) {
-        if (true) {
-          res = res + ' ' + s.grade;
-        }
+      for (const staff of staffArray) {
+        res = res + ' ' + staff.initials;
       }
-      return res;
     }
-    return '';
+    return res;
   }
+
 
   getStaffArrayNames(staffArray: Staff[]) {
     let res = '';
     if (staffArray) {
-      for (const s of staffArray) {
-        if (true) {
-          res = res + ' ' + s.userName;
-        }
+      for (const staff of staffArray) {
+        res = res + ' ' + staff.userName + ',';
       }
-      return res;
     }
-    return '';
+    return res;
   }
 
-  cellClicked(s: Duty, i: number) {
-    if (this.selectedSlot[0] === s.dutyId && i === this.selectedSlot[1]) {
+
+  cellClicked(duty: Duty, i: number, selectedStaff: Staff[]) {
+    if (this.selectedSlot[0] === duty.dutyId && i === this.selectedSlot[1]) {
       this.selectedSlot = [-1, -1];
     }
     else {
-      this.selectedSlot = [s.dutyId, i];
+      this.selectedSlot = [duty.dutyId, i];
+      if (selectedStaff) {
+        this.preSelectedStaffIdList = this.getSelectedStaffIdArray(selectedStaff);
+      }
+      else { this.preSelectedStaffIdList = []; }
+
+      this.openSP2Dialog(duty, i, this.preSelectedStaffIdList);
     }
   }
 
-  menuClick(staff: Staff, col: number, duty: Duty) {
-    // console.log('Staff Id = ' + staff.userName + ' index = ' + col + ' => ' + duty.dutyCode);
-
-    // let session = '';
-    // let dayNo = 0;
-
-    // if (col % 2) {
-    //   session = 'PM';
-    // }
-    // else {
-    //   session = 'AM';
-    // }
-
-    // if (col > 1) {
-    //   if (col % 2) {
-    //     dayNo = (col / 2) - 0.5;
-    //   }
-    //   else {
-    //     dayNo = (col / 2);
-    //   }
-    // }
-    // const dutyDate = new Date(new Date(this.weekStart).setDate(this.weekStart.getDate() + dayNo));
-    // const dateString = formatDate(dutyDate, 'yyyy-MM-dd', this.locale);
-    // const alloc: Alloc = {
-    //   date: dateString,
-    //   session,
-    //   staff: staff.staffId,
-    //   duty: duty.dutyId
-    // };
-    // this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
-    //   this.result = data;
-    //   console.log('result = ' + data);
-    //   this.resetTableData();
-    // });
-
+  getSelectedStaffIdArray(ss: Staff[]) {
+    const selectedStaff = [];
+    for (const staff of ss) {
+      selectedStaff.push(staff.staffId);
+    }
+    return selectedStaff;
   }
+
+  menuClick(staff: Staff, col: number, duty: Duty) { }
 
   menuClosed() {
     console.log('Menu closed!');
@@ -239,11 +223,95 @@ export class RostaLocationComponent implements OnInit {
 
   }
 
-  isSelected(s: number, i: number) {
-      if (i === this.selectedSlot[1] && s === this.selectedSlot[0]) {
+  openSP2Dialog(duty: Duty, col: number, selectedStaff: number[]): void {
+    const dialogStaffPicker = this.dialog.open(ShiftStaffDialogComponent, {
+      width: '250px',
+      data: { staffList: this.staff, duty, col, selectedStaff }
+
+    });
+
+    dialogStaffPicker.afterClosed().subscribe(staffIdList => {
+
+      if (staffIdList ) {
+        let session = '';
+        let dayNo = 0;
+
+        if (this.selectedSlot[1] % 2) {
+          session = 'PM';
+        }
+        else {
+          session = 'AM';
+        }
+
+        if (this.selectedSlot[1] > 1) {
+          if (this.selectedSlot[1] % 2) {
+            dayNo = (this.selectedSlot[1] / 2) - 0.5;
+          }
+          else {
+            dayNo = (this.selectedSlot[1] / 2);
+          }
+        }
+        const dutyDate = new Date(new Date(this.weekStart).setDate(this.weekStart.getDate() + dayNo));
+        const dateString = formatDate(dutyDate, 'yyyy-MM-dd', this.locale);
+        for (const s of staffIdList) {
+          console.log('Saving StaffId = ' + s);
+          const alloc: Alloc = {
+              date: dateString,
+              session,
+              staff: s,
+              duty: duty.dutyId
+            };
+          this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
+              this.result = data;
+              console.log('result = ' + data);
+          //    this.resetTableData();
+            });
+        }
+        if (this.preSelectedStaffIdList.length > 0) {
+          this.preSelectedStaffIdList.forEach(element => {
+            // check if in staffIdList
+            if (!this.checkIfIdinList(element, staffIdList)) {
+              console.log('Need to cancel shift for ID = ' + element);
+              const alloc: Alloc = {
+                date: dateString,
+                session,
+                staff: element,
+                duty: 0
+              };
+              this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
+                this.result = data;
+                console.log('result = ' + data);
+             //   this.resetTableData();
+              });
+            }
+          });
+        }
+
+      }
+      this.resetTableData();
+      this.selectedSlot = [-1, -1];
+    });
+  }
+
+  checkIfIdinList(n: number, list: number[]) {
+    for (const l of list) {
+      if (l === n) {
         return true;
       }
-      else { return false; }
+    }
+    return false;
+  }
+
+
+
+
+
+
+  isSelected(s: number, i: number) {
+    if (i === this.selectedSlot[1] && s === this.selectedSlot[0]) {
+      return true;
+    }
+    else { return false; }
   }
 
 }

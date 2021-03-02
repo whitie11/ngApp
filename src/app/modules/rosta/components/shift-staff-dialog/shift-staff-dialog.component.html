@@ -1,0 +1,13 @@
+<p>Select Staff for 
+{{duty.dutyType}} on date!!!</p>
+<div mat-dialog-content>
+    <mat-selection-list #list [(ngModel)]="selectedStaff">
+      <mat-list-option *ngFor="let staff of data.staffList" [value]="staff.staffId">
+        {{staff.userName}}
+      </mat-list-option>
+  </mat-selection-list>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button [mat-dialog-close]="selectedStaff" cdkFocusInitial>Ok</button>
+  </div>

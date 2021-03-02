@@ -82,7 +82,6 @@ export class RostaMainComponent implements OnInit {
     });
 
     dialogRefDutyPicker.afterClosed().subscribe(result => {
-      console.log('Selected Duties ' + result);
       if ( result && result.length > 0) {
       this.store.dispatch(RostaActions.SetDutyIdList({ dutyIdList: result }));
       }

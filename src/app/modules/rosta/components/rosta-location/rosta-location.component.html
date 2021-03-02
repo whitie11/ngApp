@@ -10,8 +10,8 @@
       <th mat-header-cell *matHeaderCellDef [style.background-color]=" setBackgroundColourCell(i) ">
         {{setAMorPM(i)}} </th>
 
-      <td mat-cell (click)="cellClicked(element[0],i)" [matMenuTriggerFor]="appMenu"
-        [matMenuTriggerData]="{duty: element[0], col: i}" (menuClosed)="menuClosed()"
+      <td mat-cell (click)="cellClicked(element[0],i,element[1][i])"
+        
         [matTooltip]="getStaffArrayNames(element[1][i])"
         [style.background-color]=" setBackgroundColourCell(i) "
         [ngClass]="isSelected(element[0].dutyId, i) ? 'highlight' : 'notHighlight'" 

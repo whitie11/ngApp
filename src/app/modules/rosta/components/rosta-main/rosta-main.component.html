@@ -11,8 +11,8 @@
       <!-- <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle> -->
       <mat-datepicker #picker startView="month"></mat-datepicker>
       <button class="button-width" mat-raised-button (click)="picker.open()">Change Date</button>
-      <button class="button-width" mat-raised-button  (click)="openSPDialog()">Select Staff</button>
-      <button class="button-width" mat-raised-button  (click)="openDutyPickerDialog()">Select Duty</button>
+      <button class="button-width" mat-raised-button  (click)="openSPDialog()">Staff List</button>
+      <button class="button-width" mat-raised-button  (click)="openDutyPickerDialog()">Duty List</button>
      
       <span class="spacer"></span>
   </mat-toolbar>
@@ -23,7 +23,7 @@
         <app-rosta-staff></app-rosta-staff>
     </ng-template>
   </mat-tab>
-  <mat-tab  label="Location View">
+  <mat-tab  label="Location/Duty View">
     <ng-template matTabContent>
      <app-rosta-location></app-rosta-location>
     </ng-template>

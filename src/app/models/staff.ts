@@ -4,5 +4,6 @@ export interface Staff {
     lastName: string;
     userName: string;
     grade: number;
+    initials: string;
   }
 
