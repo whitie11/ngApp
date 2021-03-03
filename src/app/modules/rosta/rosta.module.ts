@@ -16,7 +16,15 @@ import { ShiftStaffDialogComponent } from './components/shift-staff-dialog/shift
 
 
 @NgModule({
-  declarations: [RostaComponent, RostaNavComponent, RostaMainComponent, RostaStaffComponent, RostaLocationComponent, StaffPickerDialogComponent, LocationPickerDialogComponent, ShiftStaffDialogComponent],
+  declarations: [
+    RostaComponent,
+    RostaNavComponent,
+    RostaMainComponent,
+    RostaStaffComponent,
+    RostaLocationComponent,
+    StaffPickerDialogComponent,
+    LocationPickerDialogComponent,
+    ShiftStaffDialogComponent],
   imports: [
     CommonModule,
     SharedModule,

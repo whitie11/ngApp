@@ -27,7 +27,7 @@ import { LibraryEffects } from './store/library/library.effects';
 import { RostaEffects } from './store/rosta/rosta.effects';
 import { DateAdapter } from '@angular/material/core';
 import { CustomDateAdapter } from './utilities/customDateAdapter';
-// import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 // import { CommonModule } from '@angular/common';
 
 @NgModule({
@@ -57,10 +57,10 @@ import { CustomDateAdapter } from './utilities/customDateAdapter';
       useClass: TokenInterceptor,
       multi: true
     },
-    // {
-    //   provide: MAT_DATE_LOCALE,
-    //   useValue: 'en-GB',
-    // }
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'en-GB',
+    }
   ],
   bootstrap: [AppComponent]
 })

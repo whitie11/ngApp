@@ -12,7 +12,6 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTableModule } from '@angular/material/table';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { NgxMatDateFnsDateModule } from 'ngx-mat-datefns-date-adapter';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -20,6 +19,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatMenuModule} from '@angular/material/menu';
 import { MatListModule } from '@angular/material/list';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [],
@@ -37,13 +37,13 @@ import { MatListModule } from '@angular/material/list';
     MatTableModule,
     MatSelectModule,
     MatDatepickerModule,
-    NgxMatDateFnsDateModule,
     MatPaginatorModule,
     MatCheckboxModule,
     MatTooltipModule,
     MatTabsModule,
     MatMenuModule,
-    MatListModule
+    MatListModule,
+    MatNativeDateModule
 
   ],
   exports: [
@@ -60,13 +60,13 @@ import { MatListModule } from '@angular/material/list';
     MatTableModule,
     MatSelectModule,
     MatDatepickerModule,
-    NgxMatDateFnsDateModule,
     MatPaginatorModule,
     MatCheckboxModule,
     MatTooltipModule,
     MatTabsModule,
     MatMenuModule,
-    MatListModule
+    MatListModule,
+    MatNativeDateModule
   ]
 })
 export class MaterialsModule { }

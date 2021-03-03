@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { parse, sub, subDays, toDate } from 'date-fns';
 import { AppState } from 'src/app/store/app.states';
 import { MessageRange, ranges } from '../../models/messageRange';
 import * as MessageActions from '../../../../store/message/message.actions';
@@ -56,24 +55,24 @@ export class MessageNavComponent implements OnInit {
   onChange() {
     switch (this.selectedRange) {
       case 'range_all': {
-        this.selectedDate = parse('2021-01-01', 'yyyy-MM-dd', new Date());
+        this.selectedDate = new Date('2021-01-01');
         break;
       }
       case 'range1': {
         // statements;
-        this.selectedDate = subDays(new Date(), 7);
+        this.selectedDate = new Date(new Date().getTime() - (7 * 24 * 60 * 60 * 1000));
         break;
       }
       case 'range2': {
-        this.selectedDate = subDays(new Date(), 14);
+        this.selectedDate = new Date(new Date().getTime() - (14 * 24 * 60 * 60 * 1000));
         break;
       }
       case 'range3': {
-        this.selectedDate = subDays(new Date(), 21);
+        this.selectedDate = new Date(new Date().getTime() - (21 * 24 * 60 * 60 * 1000));
         break;
       }
       case 'range4': {
-        this.selectedDate = subDays(new Date(), 28);
+        this.selectedDate = new Date(new Date().getTime() - (28 * 24 * 60 * 60 * 1000));
         break;
       }
 

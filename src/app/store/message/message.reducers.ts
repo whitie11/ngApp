@@ -1,6 +1,6 @@
 
 import { Action, createReducer, on } from '@ngrx/store';
-import { subDays } from 'date-fns';
+
 import { MyMessage } from 'src/app/modules/messages/models/message';
 import * as MessageActions from './message.actions';
 
@@ -13,7 +13,7 @@ export interface MessageState {
 }
 
 export const initialState: MessageState = {
-  dateFrom: subDays(new Date(), 7),
+  dateFrom: new Date(new Date().getTime() - (7 * 24 * 60 * 60 * 1000)),
   selectedRange: 'range1',
   isWaiting: false,
   messages: [],
