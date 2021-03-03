@@ -3,6 +3,6 @@
         "node_modules{,/**}",
         ".vscode{,/**}"
     ],
-    "appService.defaultWebAppToDeploy": "/subscriptions/7e0fee37-f890-4493-82e1-4693eac39f9c/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/ctib",
+    "appService.defaultWebAppToDeploy": "None",
     "appService.deploySubpath": "."
 }
