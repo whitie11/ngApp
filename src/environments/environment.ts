@@ -7,7 +7,7 @@
 export const environment = {
   production: false,
   urls: {
-    BASE_URL: 'http://whitie1191.pythonanywhere.com'
+    BASE_URL: 'https://whitie1191.pythonanywhere.com'
   }
 
 };
