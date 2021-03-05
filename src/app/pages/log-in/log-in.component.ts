@@ -26,7 +26,7 @@ export class LogInComponent implements OnInit {
     this.waiting$ = of(true);
     this.isAuth$ = of(false);
     this.formdata = this.fb.group({
-    username: this.fb.control('whitie1191', [Validators.required, validateWhitespace]),
+    username: this.fb.control('ian.white', [Validators.required, validateWhitespace]),
     password: this.fb.control('C@sper12', [Validators.required, validateWhitespace])
   });
    }

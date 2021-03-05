@@ -33,11 +33,11 @@
 	<span class="example-spacer"></span>
   <!-- <span >UserId: {{userId$ | async}}</span> -->
   <span *ngIf="(isAuthenticated$ | async)">
-    <span >User: {{username$ | async}}</span>
-    <button mat-raised-button color="accent" type="button" (click)="onLogOut()">Logout</button>
+    <span >User: {{username$ | async}}  </span>
+    <button  mat-raised-button color="accent" type="button" (click)="onLogOut()">Logout</button>
   </span >
 
-  <span *ngIf="!(isAuthenticated$ | async)">
+  <span *ngIf="!(isAuthenticated$ | async)" class="space-left">
     <button mat-raised-button color="accent" type="button" [routerLink]="'/login'">LogIn</button>
   </span>
 
