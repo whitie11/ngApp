@@ -70,7 +70,7 @@ export class RostaLocationComponent implements OnInit {
     this.staffIdList$ = this.store.select(fromRostaSelectors.staffIdsFromStore);
     this.staffIdList$.subscribe(s => {
       this.staffIdList = s;
-      this.resetTableData();
+      this.resetTableData(s);
     });
 
     this.staff$ = this.rostaService.getStaffList();
@@ -81,14 +81,14 @@ export class RostaLocationComponent implements OnInit {
     this.dutyIdArray$ = this.store.select(fromRostaSelectors.dutyIdsFromStore);
     this.dutyIdArray$.subscribe(s => {
       this.dutyIdArray = s;
-      this.resetTableData();
+      this.resetTableData(s);
     });
 
     this.weekStart$ = this.store.select(fromRostaSelectors.dateFromStore);
     this.weekStart$.subscribe(s => {
       this.weekStart = s;
       this.setDayLabelRow(s);
-      this.resetTableData();
+      this.resetTableData(s);
     });
   }
 
@@ -103,7 +103,7 @@ export class RostaLocationComponent implements OnInit {
     }
   }
 
-  resetTableData() {
+  resetTableData(res: any) {
     if (this.weekStart && this.staffIdList) {
       this.rotaArrayDV$ = this.rostaService.getStaffPerDutyFromDate(this.weekStart, this.dutyIdArray);
       this.rotaArrayDV$.subscribe(r => {
@@ -232,7 +232,7 @@ export class RostaLocationComponent implements OnInit {
 
     dialogStaffPicker.afterClosed().subscribe(staffIdList => {
 
-      if (staffIdList ) {
+      if (staffIdList) {
         let session = '';
         let dayNo = 0;
 
@@ -256,16 +256,17 @@ export class RostaLocationComponent implements OnInit {
         for (const s of staffIdList) {
           console.log('Saving StaffId = ' + s);
           const alloc: Alloc = {
-              date: dateString,
-              session,
-              staff: s,
-              duty: duty.dutyId
-            };
-          this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
-              this.result = data;
-              console.log('result = ' + data);
-              this.resetTableData();
-            });
+            date: dateString,
+            session,
+            staff: s,
+            duty: duty.dutyId
+          };
+          // this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
+          //   this.result = data;
+          //   console.log('result = ' + data);
+          //   this.resetTableData();
+          // });
+          this.saveAndReset(alloc);
         }
         if (this.preSelectedStaffIdList.length > 0) {
           this.preSelectedStaffIdList.forEach(element => {
@@ -278,19 +279,27 @@ export class RostaLocationComponent implements OnInit {
                 staff: element,
                 duty: 0
               };
-              this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
-                this.result = data;
-                console.log('result = ' + data);
-                this.resetTableData();
-              });
+              // this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
+              //   this.result = data;
+              //   console.log('result = ' + data);
+              //   this.resetTableData();
+              // });
+              this.saveAndReset(alloc);
             }
           });
         }
 
       }
-    //  this.resetTableData();
+      //  this.resetTableData();
       this.selectedSlot = [-1, -1];
     });
+  }
+
+  async saveAndReset(alloc: Alloc) {
+    console.log('saving start');
+    const res = await this.rostaService.saveOrEditDuty(alloc).toPromise();
+    this.resetTableData(res);
+    console.log('saving end');
   }
 
   checkIfIdinList(n: number, list: number[]) {
