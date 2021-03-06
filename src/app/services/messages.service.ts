@@ -20,14 +20,14 @@ export class MessagesService {
 
   public  getMessagesFromDate(posted: Date): Observable<MyMessage[] > {
     const url = `${this.BASE_URL}/messages/all_messages_from_date/`;
-    const postedStr = posted.toLocaleDateString();
+    const postedStr = posted.toISOString();
     console.log('in get messages from date');
     return this.http.post<any>(url, {postedStr});
   }
 
   public  getFilteredMessagesFromDate(posted: Date, incArchived: boolean): Observable<MyMessage[] > {
     const url = `${this.BASE_URL}/messages/filtered_messages_from_date/`;
-    const postedStr = posted.toLocaleDateString();
+    const postedStr = posted.toISOString();
     console.log('message service ' + incArchived);
     return this.http.post<any>(url, {postedStr, incArchived});
   }

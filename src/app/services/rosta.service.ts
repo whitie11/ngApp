@@ -18,13 +18,13 @@ export class RostaService {
 
   public  getDutiesFromDate(weekStart: Date, staffList: number[]): Observable<RotaRow[] > {
     const url = `${this.BASE_URL}/rosta/duty_list/`;
-    const weekStartStr = weekStart.toLocaleDateString();
+    const weekStartStr = weekStart.toISOString();
     return this.http.post<any>(url, {weekStartStr, staffList });
   }
 
   public  getStaffPerDutyFromDate(weekStart: Date, dutyIdArray: number[]): Observable<RotaRowDutyView[] > {
     const url = `${this.BASE_URL}/rosta/duty_staff/`;
-    const weekStartStr = weekStart.toLocaleDateString();
+    const weekStartStr = weekStart.toISOString();
     return this.http.post<any>(url, {weekStartStr, dutyIdArray });
   }
 
