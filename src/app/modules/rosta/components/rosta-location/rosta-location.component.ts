@@ -264,7 +264,7 @@ export class RostaLocationComponent implements OnInit {
           this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
               this.result = data;
               console.log('result = ' + data);
-          //    this.resetTableData();
+              this.resetTableData();
             });
         }
         if (this.preSelectedStaffIdList.length > 0) {
@@ -281,14 +281,14 @@ export class RostaLocationComponent implements OnInit {
               this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
                 this.result = data;
                 console.log('result = ' + data);
-             //   this.resetTableData();
+                this.resetTableData();
               });
             }
           });
         }
 
       }
-      this.resetTableData();
+    //  this.resetTableData();
       this.selectedSlot = [-1, -1];
     });
   }
