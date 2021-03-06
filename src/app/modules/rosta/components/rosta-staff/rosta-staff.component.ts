@@ -188,7 +188,7 @@ export class RostaStaffComponent implements OnInit {
     };
     this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
       this.result = data;
-      console.log('result = ' + data);
+      console.log('result from save or edit = ' + data);
       this.resetTableData();
     });
 
