@@ -58,7 +58,7 @@ export const metaReducers: MetaReducer<any>[] = [login];
     LayoutMainModule,
     SharedModule,
 
-    StoreModule.forRoot( reducers, { metaReducers}),
+    StoreModule.forRoot( reducers, { }),
     EffectsModule.forRoot([AuthEffects, MessageEffects, LibraryEffects, RostaEffects]),
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument(),

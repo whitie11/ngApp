@@ -6,8 +6,9 @@
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell
         [ngClass]="'rowLabel'"
+        [matTooltip]=" element[0]?.firstName + ' ' + element[0]?.lastName + ' Band:' + element[0]?.grade"
         *matCellDef="let element"
-         > {{element[0]?.userName}} </td>
+        > {{element[0]?.userName}} </td>
       </ng-container>
   
       <ng-container *ngFor="let i = index; let column of displayedColumns2" 
@@ -18,7 +19,7 @@
         <td mat-cell 
         (click)="cellClicked(element[0],i)"
         [matMenuTriggerFor]="appMenu"
-        [matMenuTriggerData]="{staff: element[0], col: i}"
+        [matMenuTriggerData]="{staff: element[0], col: i} "
         (menuClosed)="menuClosed()"
         [matTooltip]=" element[1][i]?.dutyType"
         [style.background-color]=" setBackgroundColourCell(i, element[0].staffId) "
