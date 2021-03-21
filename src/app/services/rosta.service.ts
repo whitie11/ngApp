@@ -8,6 +8,8 @@ import { Alloc } from '../modules/rosta/models/alloc';
 import { Duty } from '../modules/rosta/models/duty';
 import { RotaRow, RotaRowDutyView } from '../modules/rosta/models/rotaRow';
 import { environment } from '../../environments/environment';
+import { Config } from '../modules/rosta/models/config';
+import { analyzeAndValidateNgModules } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root'
@@ -50,4 +52,25 @@ export class RostaService {
     return this.http.get<Duty[]>(url);
   }
 
-}
+  public  getPreSelectedConfig(userId: number): Observable<Config> {
+    const url = `${this.BASE_URL}/rosta/config/`;
+
+    const jsonPerson = '{"userId":' + userId + '}';
+    const personObject = JSON.parse(jsonPerson);
+
+    const result = this.http.post<Config>(url, personObject);
+    return result;
+  }
+
+  public  setPreSelectedConfig(config: Config): Observable<Config> {
+    let res: any;
+    const url = `${this.BASE_URL}/rosta/config/`;
+    const json = JSON.stringify(config);
+    this.http.put<any>(url, config).subscribe(response => {
+      res = response;
+    });
+    return res;
+    }
+
+  }
+

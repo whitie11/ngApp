@@ -20,6 +20,7 @@ export class RostaComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('Rosta component init');
   }
 
 }

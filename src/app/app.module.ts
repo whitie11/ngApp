@@ -1,15 +1,14 @@
-import { BrowserModule } from '@angular/platform-browser';
+
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
-import { StoreModule } from '@ngrx/store';
+import { ActionReducer, MetaReducer, StoreModule } from '@ngrx/store';
 import { StoreRouterConnectingModule } from '@ngrx/router-store';
 
 import { AppComponent } from './app.component';
-
 
 import { AuthService } from './services/auth.service';
 import { AuthGuardService } from './guards/auth_guard';
@@ -25,10 +24,28 @@ import { MessageEffects } from './store/message/message.effects';
 import { TokenInterceptor } from './services/token_interceptor';
 import { LibraryEffects } from './store/library/library.effects';
 import { RostaEffects } from './store/rosta/rosta.effects';
-import { DateAdapter } from '@angular/material/core';
-import { CustomDateAdapter } from './utilities/customDateAdapter';
+
 import { MAT_DATE_LOCALE } from '@angular/material/core';
-// import { CommonModule } from '@angular/common';
+
+// console.log all actions
+export function login(reducer: ActionReducer<any>): ActionReducer<any> {
+
+  return (state, action) => {
+    if (action.type === '[Auth] Login Success') {
+          console.log('In login success', state);
+
+          const newState = { ...state.rosta, dutyIdList: [1, 2]  };
+          return reducer(newState, action);
+        }
+
+
+    return reducer(state, action);
+  };
+}
+
+export const metaReducers: MetaReducer<any>[] = [login];
+
+
 
 @NgModule({
   declarations: [
@@ -41,7 +58,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
     LayoutMainModule,
     SharedModule,
 
-    StoreModule.forRoot( reducers, { }),
+    StoreModule.forRoot( reducers, { metaReducers}),
     EffectsModule.forRoot([AuthEffects, MessageEffects, LibraryEffects, RostaEffects]),
     StoreRouterConnectingModule.forRoot(),
     StoreDevtoolsModule.instrument(),

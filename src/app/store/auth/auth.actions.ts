@@ -11,7 +11,7 @@ export const LogIn = createAction(
 
 export const LogInSuccess = createAction(
   '[Auth] Login Success',
-  props<{ payload: any,  userName: string  }>()
+  props<{ payload: any,  userName: string }>()
 );
 
 export const LogInFailure = createAction(

@@ -40,7 +40,7 @@ const reducer = createReducer(
       isWaiting: false,
       errorMessage: null,
       token: payload.token,
-      role: payload.role
+      role: payload.role,
     };
   }),
   on(AuthActions.LogInFailure, (state: AuthState, { payload }) => {

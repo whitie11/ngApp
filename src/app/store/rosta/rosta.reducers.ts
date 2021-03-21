@@ -14,7 +14,7 @@ export const initialState: RostaState = {
     isWorking: false,
     duties: [],
     dateFrom: new Date('2021,1,8'),
-    staffIdList: [1, 2, 3, 5],
+    staffIdList: [1, 2, 5],
     dutyIdList: [1, 2, 3]
 };
 
@@ -44,4 +44,5 @@ const reducer = createReducer(
 export function rostaReducer(state: RostaState | undefined, action: Action) {
     return reducer(state, action);
 }
+
 

@@ -21,9 +21,9 @@ export class LibraryService {
 
   public download(fl: string): void{
     const url = `${this.BASE_URL}/library/download/`;
-    const flStr = '/' + fl;
+   // const flStr = '/' + fl;
     this.http.post(url,
-      {fileStr: flStr}, { responseType: 'blob'}).subscribe(
+      {fileStr: fl}, { responseType: 'blob'}).subscribe(
       data => {
         const x = data;
         saveAs(data, fl );

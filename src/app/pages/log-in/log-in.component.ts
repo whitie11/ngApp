@@ -43,9 +43,8 @@ export class LogInComponent implements OnInit {
 
   onSubmit() {
     const data = this.formdata.getRawValue() as LoginDTO;
-   // console.log(data);
-    this.store.dispatch(AuthActions.LogIn({ payload: data}));
 
+    const x =  this.store.dispatch(AuthActions.LogIn({ payload: data}));
   }
 
   onLogOut() {

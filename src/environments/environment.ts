@@ -3,7 +3,7 @@
 // The list of file replacements can be found in `angular.json`.
 
 
-//  BASE_URL: 'https://whitie1191.pythonanywhere.com'
+//  BASE_URL: 'https://whitie1191.pythonanywhere.com' 'http://localhost:8000'
 
 
 export const environment = {
