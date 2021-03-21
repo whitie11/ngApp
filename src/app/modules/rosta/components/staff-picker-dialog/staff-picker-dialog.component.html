@@ -2,7 +2,10 @@
 <h1 mat-dialog-title>Select Staff Roster</h1>
 <div mat-dialog-content>
   <mat-selection-list #list [(ngModel)]="selectedStaff">
-    <mat-list-option *ngFor="let staff of data" [value]="staff.staffId">
+    <mat-list-option *ngFor="let staff of data" 
+    [value]="staff.staffId"
+    [matTooltip]=" staff.firstName + ' ' + staff.lastName + ' Band:' + staff.grade"
+    >
       {{staff.userName}}
     </mat-list-option>
 </mat-selection-list>

@@ -58,12 +58,21 @@ export class RostaMainComponent implements OnInit, OnDestroy {
     let userId = null;
     this.store.select(fromAuthSelectors.getUserId).subscribe( res => {
       userId = res;
+      this.config = {
+        userId: res,
+        selected_duties: [1],
+        selected_staff: [userId]
+      };
 
-    // TODO get preferences from DB
-      this.rostaService.getPreSelectedConfig(userId).subscribe( data => {
+      this.rostaService.getPreSelectedConfig(userId).subscribe( (data: Config) => {
+      console.log('get config data ', data);
+      if (data){
       this.config = data;
+      }
+      console.log('Config Data ', data);
       this.store.dispatch(RostaActions.SetDutyIdList({dutyIdList: this.config.selected_duties}));
       this.store.dispatch(RostaActions.SetStaffIdList({staffIdList: this.config.selected_staff}));
+
     });
  });
 

@@ -1,5 +1,5 @@
 export interface Config {
-    staffId: number;
+    userId: number;
     selected_duties: number[];
     selected_staff: number[];
 }

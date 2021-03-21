@@ -52,14 +52,19 @@ export class RostaService {
     return this.http.get<Duty[]>(url);
   }
 
-  public  getPreSelectedConfig(userId: number): Observable<Config> {
+  public  getPreSelectedConfig(userId: number): any{
     const url = `${this.BASE_URL}/rosta/config/`;
 
     const jsonPerson = '{"userId":' + userId + '}';
     const personObject = JSON.parse(jsonPerson);
 
-    const result = this.http.post<Config>(url, personObject);
-    return result;
+    try {
+      const result = this.http.post<Config>(url, personObject);
+      return result;
+    } catch (error) {
+      return null;
+    }
+
   }
 
   public  setPreSelectedConfig(config: Config): Observable<Config> {
