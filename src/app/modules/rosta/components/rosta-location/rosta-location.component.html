@@ -1,5 +1,9 @@
 <div class="table-container">
-  <table mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
+  <div *ngIf="waiting">
+    <h1>Refreshing Data: please wait...</h1>
+    <mat-spinner style="margin:0 auto;" ></mat-spinner>
+  </div>
+  <table  *ngIf="!waiting" mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
 
     <ng-container matColumnDef="duty">
       <th mat-header-cell *matHeaderCellDef></th>
@@ -33,7 +37,7 @@
         {{ headerRowDay[j] }} </th>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="headerRowDef"></tr>
+    <tr mat-header-row *matHeaderRowDef="headerRowDef; sticky: true" ></tr>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>

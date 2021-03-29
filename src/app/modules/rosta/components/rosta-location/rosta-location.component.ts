@@ -55,6 +55,7 @@ export class RostaLocationComponent implements OnInit, OnDestroy {
 
   result: any | null;
 
+  waiting = true;
 
   constructor(
     public dialog: MatDialog,
@@ -108,11 +109,14 @@ export class RostaLocationComponent implements OnInit, OnDestroy {
   }
 
   resetTableData() {
+
     if (this.weekStart && this.dutyIdArray && this.rotaArrayDV$ !== undefined) {
+      this.waiting = true;
       this.rotaArrayDV$ = this.rostaService.getStaffPerDutyFromDate(this.weekStart, this.dutyIdArray).subscribe(r => {
         this.rotaArrayDV = r;
         console.log('Resetting table Data'); // TODO remove all console.log's
         this.dataSource = new MatTableDataSource<RotaRowDutyView>(this.rotaArrayDV);
+        this.waiting = false;
       });
     }
   }
@@ -123,6 +127,7 @@ export class RostaLocationComponent implements OnInit, OnDestroy {
       this.setDesplayedColumns(r);
       console.log('Setting table date');
       this.dataSource = new MatTableDataSource<RotaRowDutyView>(this.rotaArrayDV);
+      this.waiting = false;
     });
 
 
@@ -302,21 +307,21 @@ export class RostaLocationComponent implements OnInit, OnDestroy {
             }
           });
         }
-
+        this.resetTableData();
       }
       this.selectedSlot = [-1, -1];
-      this.resetTableData();
+
     });
   }
 
-    saveAndReset(alloc: Alloc) {
-      const res = this.rostaService.saveOrEditDuty(alloc).subscribe((data: any) => {
-        console.log('result from save or edit = ' + data);
-        if (data !== false) {
-            // this.resetTableData();
-          }
+  saveAndReset(alloc: Alloc) {
+    const res = this.rostaService.saveOrEditDuty(alloc).subscribe((data: any) => {
+      console.log('result from save or edit = ' + data);
+      if (data !== false) {
+        // this.resetTableData();
+      }
 
-        });
+    });
   }
 
   checkIfIdinList(n: number, list: number[]) {
