@@ -14,6 +14,7 @@ export class ShiftStaffDialogComponent implements OnInit {
   duty!: Duty;
   col!: number;
   selectedStaff: number[] = [];
+  dateStr!: string;
 
   constructor(
     public dialogRef: MatDialogRef<ShiftStaffDialogComponent>,
@@ -25,6 +26,7 @@ export class ShiftStaffDialogComponent implements OnInit {
     this.duty = this.data.duty;
     this.col = this.data.col;
     this.selectedStaff = this.data.selectedStaff;
+    this.dateStr = this.data.dateStr;
   }
 
   onNoClick(): void {

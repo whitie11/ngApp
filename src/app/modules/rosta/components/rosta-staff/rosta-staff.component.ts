@@ -1,7 +1,7 @@
-import { Component, Inject, LOCALE_ID, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { RostaService } from 'src/app/services/rosta.service';
 import { AppState } from 'src/app/store/app.states';
 import { Duty } from '../../models/duty';
@@ -10,25 +10,26 @@ import * as fromRostaSelectors from '../../../../store/rosta/rosta.selectors';
 import { Staff } from 'src/app/models/staff';
 import { Alloc } from '../../models/alloc';
 import { formatDate } from '@angular/common';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-rosta-staff',
   templateUrl: './rosta-staff.component.html',
   styleUrls: ['./rosta-staff.component.css']
 })
-export class RostaStaffComponent implements OnInit {
+export class RostaStaffComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatTable)
   table!: MatTable<any>;
 
   rotaArray: RotaRow[] = [];
-  rotaArray$!: Observable<RotaRow[]>;
+  rotaArray$!: Subscription;
 
   staffIdList!: number[];
-  staffIdList$!: Observable<number[]>;
+  staffIdList$!: Subscription;
 
   weekStart!: Date;
-  weekStart$!: Observable<Date>;
+  weekStart$!: Subscription;
 
   dataSource: any;
   displayedColumns: string[] = [];
@@ -36,11 +37,12 @@ export class RostaStaffComponent implements OnInit {
   headerRowDef: string[] = ['h0'];
   headerRowDef2: string[] = [];
   headerRowDay: string[] = [];
+
   duties: Duty[] = [];
-  duties$!: Observable<Duty[]>;
+  duties$!: Subscription;
 
   selectedSlot: [number, number] = [-1, -1];
-
+  selectedUserDateStr = '';
   result: any | null;
 
 
@@ -49,23 +51,28 @@ export class RostaStaffComponent implements OnInit {
     private store: Store<AppState>,
     @Inject(LOCALE_ID) private locale: string
   ) {
-    this.duties$ = this.store.select(fromRostaSelectors.dutiesFromStore);
-    this.duties$.subscribe(d => {
+    this.duties$ = this.store.select(fromRostaSelectors.dutiesFromStore).subscribe(d => {
       this.duties = d;
     });
 
-    this.staffIdList$ = this.store.select(fromRostaSelectors.staffIdsFromStore);
-    this.staffIdList$.subscribe(s => {
+    this.staffIdList$ = this.store.select(fromRostaSelectors.staffIdsFromStore).subscribe(s => {
       this.staffIdList = s;
       this.resetTableData();
     });
 
-    this.weekStart$ = this.store.select(fromRostaSelectors.dateFromStore);
-    this.weekStart$.subscribe(s => {
+    this.weekStart$ = this.store.select(fromRostaSelectors.dateFromStore).subscribe(s => {
       this.weekStart = s;
       this.setDayLabelRow(s);
       this.resetTableData();
     });
+
+  }
+  ngOnDestroy(): void {
+   console.log('rosta-staff destroyed');
+   this.rotaArray$.unsubscribe();
+   this.staffIdList$.unsubscribe();
+   this.duties$.unsubscribe();
+   this.weekStart$.unsubscribe();
   }
 
   setDayLabelRow(wc: Date) {
@@ -80,9 +87,10 @@ export class RostaStaffComponent implements OnInit {
   }
 
   resetTableData() {
-    if (this.weekStart && this.staffIdList) {
-      this.rotaArray$ = this.rostaService.getDutiesFromDate(this.weekStart, this.staffIdList);
-      this.rotaArray$.subscribe(r => {
+    if (this.weekStart !== undefined && this.staffIdList && this.rotaArray$ !== undefined) {
+    //  this.rotaArray$.unsubscribe();
+      console.log('calling rosta service getdutiesfromdate');
+      this.rotaArray$ = this.rostaService.getDutiesFromDate(this.weekStart, this.staffIdList).subscribe(r => {
         this.rotaArray = r;
         // this.setDesplayedColumns(r);
         // this.dataSource = new MatTableDataSource();
@@ -93,15 +101,12 @@ export class RostaStaffComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.rotaArray$ = this.rostaService.getDutiesFromDate(this.weekStart, this.staffIdList);
-    this.rotaArray$.subscribe(r => {
+    this.rotaArray$ = this.rostaService.getDutiesFromDate(this.weekStart, this.staffIdList).subscribe(r => {
       this.rotaArray = r;
       this.setDesplayedColumns(r);
       console.log('Setting table date');
       this.dataSource = new MatTableDataSource<RotaRow>(this.rotaArray);
     });
-
-
   }
 
   setDesplayedColumns(ra: RotaRow[]) {
@@ -148,14 +153,38 @@ export class RostaStaffComponent implements OnInit {
 
   }
 
-  cellClicked(s: Staff, i: number) {
-    if (this.selectedSlot[0] === s.staffId && i === this.selectedSlot[1]) {
+  cellClicked(s: Staff, col: number) {
+    if (this.selectedSlot[0] === s.staffId && col === this.selectedSlot[1]) {
       this.selectedSlot = [-1, -1];
     }
     else {
-      this.selectedSlot = [s.staffId, i];
+      this.selectedSlot = [s.staffId, col];
     }
+    this.selectedUserDateStr = s.userName + ' on the ' + this.getSelectedDateFromCol(col);
   }
+
+  getSelectedDateFromCol(col: number) {
+    let session = '';
+    let dayNo = 0;
+    if (col % 2) {
+      session = 'Afternoon of the ';
+    }
+    else {
+      session = 'Morning of the ';
+    }
+
+    if (col > 1) {
+      if (col % 2) {
+        dayNo = (col / 2) - 0.5;
+      }
+      else {
+        dayNo = (col / 2);
+      }
+    }
+    const dutyDate = new Date(new Date(this.weekStart).setDate(this.weekStart.getDate() + dayNo));
+    return session + ' ' + formatDate(dutyDate, 'dd-MM-yyyy', this.locale);
+  }
+
 
   menuClick(staff: Staff, col: number, duty: Duty) {
     console.log('Staff Id = ' + staff.userName + ' index = ' + col + ' => ' + duty.dutyCode);
@@ -186,11 +215,14 @@ export class RostaStaffComponent implements OnInit {
       staff: staff.staffId,
       duty: duty.dutyId
     };
-    this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
-      this.result = data;
-      console.log('result from save or edit = ' + data);
-      this.resetTableData();
+    const res = this.rostaService.saveOrEditDuty(alloc).subscribe((data: any) => {
+    console.log('result from save or edit = ' + data);
+    if (data !== false) {
+        this.resetTableData();
+      }
+
     });
+
 
   }
 

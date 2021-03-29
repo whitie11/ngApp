@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { Staff } from '../models/staff';
 import { MyMessage } from '../modules/messages/models/message';
 import { NewMessageData } from '../modules/messages/models/newMessageData';
@@ -9,7 +9,8 @@ import { Duty } from '../modules/rosta/models/duty';
 import { RotaRow, RotaRowDutyView } from '../modules/rosta/models/rotaRow';
 import { environment } from '../../environments/environment';
 import { Config } from '../modules/rosta/models/config';
-import { analyzeAndValidateNgModules } from '@angular/compiler';
+import { catchError, tap } from 'rxjs/operators';
+
 
 @Injectable({
   providedIn: 'root'
@@ -31,10 +32,20 @@ export class RostaService {
   }
 
 
-  public saveOrEditDuty(alloc: Alloc): Observable<Alloc> {
+  public saveOrEditDuty(alloc: Alloc): any{
     const url = `${this.BASE_URL}/alloc/`;
     const json = JSON.stringify(alloc);
-    return this.http.put<any>(url, json);
+    return this.http.put<any>(url, json).pipe(
+      tap((data: any) => {
+        console.log(data);
+        return true;
+      }),
+      catchError((err) => {
+        console.log('error puting Alloc ', err);
+        return of(false);
+      })
+    );
+
   }
 
   public  getDuties(): Observable<Duty[] > {
@@ -52,20 +63,13 @@ export class RostaService {
     return this.http.get<Duty[]>(url);
   }
 
-  public  getPreSelectedConfig(userId: number): any{
+  public  getPreSelectedConfig(userId: number): Observable<Config>{
     const url = `${this.BASE_URL}/rosta/config/`;
-
     const jsonPerson = '{"userId":' + userId + '}';
     const personObject = JSON.parse(jsonPerson);
-
-    try {
-      const result = this.http.post<Config>(url, personObject);
-      return result;
-    } catch (error) {
-      return null;
+    return this.http.post<Config>(url, personObject);
     }
 
-  }
 
   public  setPreSelectedConfig(config: Config): Observable<Config> {
     let res: any;

@@ -54,7 +54,7 @@
 
   <mat-menu #appMenu="matMenu">
     <ng-template matMenuContent let-staff="staff" let-col="col">
-      <span>Edit Duty</span>
+      <span style="background-color:rgb(248, 229, 229)" >Select Duty for {{selectedUserDateStr}}</span>
 
       <button mat-menu-item
       *ngFor="let k = index; let duty of duties" 

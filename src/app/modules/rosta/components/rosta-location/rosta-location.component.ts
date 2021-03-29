@@ -1,7 +1,7 @@
-import { Component, Inject, LOCALE_ID, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { RostaService } from 'src/app/services/rosta.service';
 import { AppState } from 'src/app/store/app.states';
 import { Duty } from '../../models/duty';
@@ -18,22 +18,22 @@ import { ShiftStaffDialogComponent } from '../shift-staff-dialog/shift-staff-dia
   templateUrl: './rosta-location.component.html',
   styleUrls: ['./rosta-location.component.css']
 })
-export class RostaLocationComponent implements OnInit {
+export class RostaLocationComponent implements OnInit, OnDestroy {
 
   @ViewChild(MatTable)
   table!: MatTable<any>;
 
   rotaArrayDV: RotaRowDutyView[] = [];
-  rotaArrayDV$!: Observable<RotaRowDutyView[]>;
+  rotaArrayDV$!: Subscription;
 
   staffIdList!: number[];
-  staffIdList$!: Observable<number[]>;
+  staffIdList$!: Subscription;
 
   dutyIdArray!: number[];
-  dutyIdArray$!: Observable<number[]>;
+  dutyIdArray$!: Subscription;
 
   weekStart!: Date;
-  weekStart$!: Observable<Date>;
+  weekStart$!: Subscription;
 
   dataSource: any;
   displayedColumns: string[] = [];
@@ -43,10 +43,10 @@ export class RostaLocationComponent implements OnInit {
   headerRowDay: string[] = [];
 
   duties: Duty[] = [];
-  duties$!: Observable<Duty[]>;
+  duties$!: Subscription;
 
   staff: Staff[] = [];
-  staff$!: Observable<Staff[]>;
+  staff$!: Subscription;
 
   selectedSlot: [number, number] = [-1, -1];
 
@@ -62,34 +62,38 @@ export class RostaLocationComponent implements OnInit {
     private store: Store<AppState>,
     @Inject(LOCALE_ID) private locale: string
   ) {
-    this.duties$ = this.store.select(fromRostaSelectors.dutiesFromStore);
-    this.duties$.subscribe(d => {
+    this.duties$ = this.store.select(fromRostaSelectors.dutiesFromStore).subscribe(d => {
       this.duties = d;
     });
 
-    this.staffIdList$ = this.store.select(fromRostaSelectors.staffIdsFromStore);
-    this.staffIdList$.subscribe(s => {
-      this.staffIdList = s;
-      this.resetTableData(s);
-    });
+    // this.staffIdList$ = this.store.select(fromRostaSelectors.staffIdsFromStore).subscribe(s => {
+    //   this.staffIdList = s;
+    //   this.resetTableData();
+    // });
 
-    this.staff$ = this.rostaService.getStaffList();
-    this.staff$.subscribe(list => {
+    this.staff$ = this.rostaService.getStaffList().subscribe(list => {
       this.staff = list;
     });
 
-    this.dutyIdArray$ = this.store.select(fromRostaSelectors.dutyIdsFromStore);
-    this.dutyIdArray$.subscribe(s => {
+    this.dutyIdArray$ = this.store.select(fromRostaSelectors.dutyIdsFromStore).subscribe(s => {
       this.dutyIdArray = s;
-      this.resetTableData(s);
+      this.resetTableData();
     });
 
-    this.weekStart$ = this.store.select(fromRostaSelectors.dateFromStore);
-    this.weekStart$.subscribe(s => {
+    this.weekStart$ = this.store.select(fromRostaSelectors.dateFromStore).subscribe(s => {
       this.weekStart = s;
       this.setDayLabelRow(s);
-      this.resetTableData(s);
+      this.resetTableData();
     });
+  }
+
+
+  ngOnDestroy(): void {
+    this.weekStart$.unsubscribe();
+    this.dutyIdArray$.unsubscribe();
+    this.staff$.unsubscribe();
+    // this.staffIdList$.unsubscribe();
+    this.duties$.unsubscribe();
   }
 
   setDayLabelRow(wc: Date) {
@@ -103,10 +107,9 @@ export class RostaLocationComponent implements OnInit {
     }
   }
 
-  resetTableData(res: any) {
-    if (this.weekStart && this.staffIdList) {
-      this.rotaArrayDV$ = this.rostaService.getStaffPerDutyFromDate(this.weekStart, this.dutyIdArray);
-      this.rotaArrayDV$.subscribe(r => {
+  resetTableData() {
+    if (this.weekStart && this.dutyIdArray && this.rotaArrayDV$ !== undefined) {
+      this.rotaArrayDV$ = this.rostaService.getStaffPerDutyFromDate(this.weekStart, this.dutyIdArray).subscribe(r => {
         this.rotaArrayDV = r;
         console.log('Resetting table Data'); // TODO remove all console.log's
         this.dataSource = new MatTableDataSource<RotaRowDutyView>(this.rotaArrayDV);
@@ -115,8 +118,7 @@ export class RostaLocationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.rotaArrayDV$ = this.rostaService.getStaffPerDutyFromDate(this.weekStart, this.dutyIdArray);
-    this.rotaArrayDV$.subscribe(r => {
+    this.rotaArrayDV$ = this.rostaService.getStaffPerDutyFromDate(this.weekStart, this.dutyIdArray).subscribe(r => {
       this.rotaArrayDV = r;
       this.setDesplayedColumns(r);
       console.log('Setting table date');
@@ -223,15 +225,37 @@ export class RostaLocationComponent implements OnInit {
 
   }
 
+  getSelectedDateFromCol(col: number) {
+    let session = '';
+    let dayNo = 0;
+    if (col % 2) {
+      session = 'Afternoon of the ';
+    }
+    else {
+      session = 'Morning of the ';
+    }
+
+    if (col > 1) {
+      if (col % 2) {
+        dayNo = (col / 2) - 0.5;
+      }
+      else {
+        dayNo = (col / 2);
+      }
+    }
+    const dutyDate = new Date(new Date(this.weekStart).setDate(this.weekStart.getDate() + dayNo));
+    return session + ' ' + formatDate(dutyDate, 'dd-MM-yyyy', this.locale);
+  }
+
   openSP2Dialog(duty: Duty, col: number, selectedStaff: number[]): void {
+    const dateStr = this.getSelectedDateFromCol(col);
     const dialogStaffPicker = this.dialog.open(ShiftStaffDialogComponent, {
       width: '250px',
-      data: { staffList: this.staff, duty, col, selectedStaff }
+      data: { staffList: this.staff, duty, col, selectedStaff, dateStr }
 
     });
 
     dialogStaffPicker.afterClosed().subscribe(staffIdList => {
-
       if (staffIdList) {
         let session = '';
         let dayNo = 0;
@@ -261,11 +285,6 @@ export class RostaLocationComponent implements OnInit {
             staff: s,
             duty: duty.dutyId
           };
-          // this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
-          //   this.result = data;
-          //   console.log('result = ' + data);
-          //   this.resetTableData();
-          // });
           this.saveAndReset(alloc);
         }
         if (this.preSelectedStaffIdList.length > 0) {
@@ -279,27 +298,25 @@ export class RostaLocationComponent implements OnInit {
                 staff: element,
                 duty: 0
               };
-              // this.rostaService.saveOrEditDuty(alloc).subscribe(data => {
-              //   this.result = data;
-              //   console.log('result = ' + data);
-              //   this.resetTableData();
-              // });
               this.saveAndReset(alloc);
             }
           });
         }
 
       }
-      //  this.resetTableData();
       this.selectedSlot = [-1, -1];
+      this.resetTableData();
     });
   }
 
-  async saveAndReset(alloc: Alloc) {
-    console.log('saving start');
-    const res = await this.rostaService.saveOrEditDuty(alloc).toPromise();
-    this.resetTableData(res);
-    console.log('saving end');
+    saveAndReset(alloc: Alloc) {
+      const res = this.rostaService.saveOrEditDuty(alloc).subscribe((data: any) => {
+        console.log('result from save or edit = ' + data);
+        if (data !== false) {
+            // this.resetTableData();
+          }
+
+        });
   }
 
   checkIfIdinList(n: number, list: number[]) {
@@ -310,10 +327,6 @@ export class RostaLocationComponent implements OnInit {
     }
     return false;
   }
-
-
-
-
 
 
   isSelected(s: number, i: number) {

@@ -67,7 +67,7 @@ export class AuthEffects {
       this.action$.pipe(
         ofType(AuthActions.LogOut),
         tap((action: any) => {
-          this.router.navigate(['/']);
+          this.router.navigate(['/home']);
         })
       ),
       { dispatch: false }

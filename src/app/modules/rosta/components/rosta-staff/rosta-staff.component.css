@@ -60,3 +60,7 @@ border: 2px double blue;
   ::ng-deep .mat-tooltip {
     font-size: 16px;
   }
+
+  menuHeader {
+    background-color: darkgray;
+  }

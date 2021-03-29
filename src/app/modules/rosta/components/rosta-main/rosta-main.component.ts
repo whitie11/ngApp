@@ -11,6 +11,7 @@ import * as fromAuthSelectors from '../../../../store/auth/auth.selectors';
 import { LocationPickerDialogComponent } from '../location-picker-dialog/location-picker-dialog.component';
 import { Duty } from '../../models/duty';
 import { Config } from '../../models/config';
+import { take } from 'rxjs/operators';
 
 
 @Component({
@@ -26,6 +27,8 @@ export class RostaMainComponent implements OnInit, OnDestroy {
   dutyList: Duty[] = [];
   dutyList$!: Subscription;
   config!: Config;
+  config$!: Subscription;
+  user$!: Subscription;
 
   constructor(public dialog: MatDialog,
               private rostaService: RostaService,
@@ -56,7 +59,7 @@ export class RostaMainComponent implements OnInit, OnDestroy {
 
    restorePreferences() {
     let userId = null;
-    this.store.select(fromAuthSelectors.getUserId).subscribe( res => {
+    this.user$ = this.store.select(fromAuthSelectors.getUserId).subscribe( res => {
       userId = res;
       this.config = {
         userId: res,
@@ -64,12 +67,12 @@ export class RostaMainComponent implements OnInit, OnDestroy {
         selected_staff: [userId]
       };
 
-      this.rostaService.getPreSelectedConfig(userId).subscribe( (data: Config) => {
+      this.config$ = this.rostaService.getPreSelectedConfig(userId).subscribe( (data: Config) => {
       console.log('get config data ', data);
       if (data){
       this.config = data;
       }
-      console.log('Config Data ', data);
+      console.log('setting Config Data ', data);
       this.store.dispatch(RostaActions.SetDutyIdList({dutyIdList: this.config.selected_duties}));
       this.store.dispatch(RostaActions.SetStaffIdList({staffIdList: this.config.selected_staff}));
 
@@ -86,6 +89,12 @@ export class RostaMainComponent implements OnInit, OnDestroy {
     }
     if (this.dutyList$) {
       this.dutyList$.unsubscribe();
+    }
+    if (this.config$) {
+      this.config$.unsubscribe();
+    }
+    if (this.user$) {
+      this.user$.unsubscribe();
     }
 
   }
