@@ -7,6 +7,7 @@ import { AppState } from 'src/app/store/app.states';
 import { Duty } from '../../models/duty';
 import { RotaRow, RotaRowDutyView } from '../../models/rotaRow';
 import * as fromRostaSelectors from '../../../../store/rosta/rosta.selectors';
+import * as fromAuthSelectors from '../../../../store/auth/auth.selectors';
 import { Staff } from 'src/app/models/staff';
 import { Alloc } from '../../models/alloc';
 import { formatDate } from '@angular/common';
@@ -57,6 +58,9 @@ export class RostaLocationComponent implements OnInit, OnDestroy {
 
   waiting = true;
 
+  loggedInUserId!: number;
+  loggedInUserId$!: Subscription;
+
   constructor(
     public dialog: MatDialog,
     private rostaService: RostaService,
@@ -65,6 +69,10 @@ export class RostaLocationComponent implements OnInit, OnDestroy {
   ) {
     this.duties$ = this.store.select(fromRostaSelectors.dutiesFromStore).subscribe(d => {
       this.duties = d;
+    });
+
+    this.loggedInUserId$ = this.store.select(fromAuthSelectors.getUserId).subscribe(id => {
+      this.loggedInUserId = id;
     });
 
     // this.staffIdList$ = this.store.select(fromRostaSelectors.staffIdsFromStore).subscribe(s => {
@@ -288,7 +296,8 @@ export class RostaLocationComponent implements OnInit, OnDestroy {
             date: dateString,
             session,
             staff: s,
-            duty: duty.dutyId
+            duty: duty.dutyId,
+            savedBy: this.loggedInUserId
           };
           this.saveAndReset(alloc);
         }
@@ -301,7 +310,8 @@ export class RostaLocationComponent implements OnInit, OnDestroy {
                 date: dateString,
                 session,
                 staff: element,
-                duty: 0
+                duty: 0,
+                savedBy: this.loggedInUserId
               };
               this.saveAndReset(alloc);
             }

@@ -45,12 +45,65 @@ export class RostaStaffComponent implements OnInit, OnDestroy {
   selectedUserDateStr = '';
   result: any | null;
 
+  loggedInUserId!: number;
+  loggedInUserId$!: Subscription;
 
   constructor(
     private rostaService: RostaService,
     private store: Store<AppState>,
     @Inject(LOCALE_ID) private locale: string
   ) {
+    // this.duties$ = this.store.select(fromRostaSelectors.dutiesFromStore).subscribe(d => {
+    //   this.duties = d;
+    // });
+
+    // this.staffIdList$ = this.store.select(fromRostaSelectors.staffIdsFromStore).subscribe(s => {
+    //   this.staffIdList = s;
+    //   this.resetTableData();
+    // });
+
+    // this.weekStart$ = this.store.select(fromRostaSelectors.dateFromStore).subscribe(s => {
+    //   this.weekStart = s;
+    //   this.setDayLabelRow(s);
+    //   this.resetTableData();
+    // });
+
+  }
+  ngOnDestroy(): void {
+    console.log('rosta-staff destroyed');
+    this.rotaArray$.unsubscribe();
+    this.staffIdList$.unsubscribe();
+    this.duties$.unsubscribe();
+    this.weekStart$.unsubscribe();
+  }
+
+  setDayLabelRow(wc: Date) {
+    let dateString = '';
+    let dutyDate = null;
+    this.headerRowDay = [];
+    for (let i = 0; i < 14; i++) {
+      dutyDate = new Date(new Date(this.weekStart).setDate(this.weekStart.getDate() + i));
+      dateString = formatDate(dutyDate, 'E dd/MM', this.locale);
+      this.headerRowDay.push(dateString);
+    }
+  }
+
+  resetTableData() {
+
+    if (this.weekStart !== undefined && this.staffIdList ) {
+      //  this.rotaArray$.unsubscribe();
+      console.log('calling rosta service getdutiesfromdate');
+      this.rotaArray$ = this.rostaService.getDutiesFromDate(this.weekStart, this.staffIdList).subscribe(r => {
+        this.rotaArray = r;
+        this.setDesplayedColumns(r);
+        this.dataSource = new MatTableDataSource();
+        console.log('Resetting table Data');
+        this.dataSource = new MatTableDataSource<RotaRow>(this.rotaArray);
+      });
+    }
+  }
+
+  ngOnInit(): void {
     this.duties$ = this.store.select(fromRostaSelectors.dutiesFromStore).subscribe(d => {
       this.duties = d;
     });
@@ -66,52 +119,16 @@ export class RostaStaffComponent implements OnInit, OnDestroy {
       this.resetTableData();
     });
 
-  }
-  ngOnDestroy(): void {
-   console.log('rosta-staff destroyed');
-   this.rotaArray$.unsubscribe();
-   this.staffIdList$.unsubscribe();
-   this.duties$.unsubscribe();
-   this.weekStart$.unsubscribe();
-  }
-
-  setDayLabelRow(wc: Date) {
-    let dateString = '';
-    let dutyDate = null;
-    this.headerRowDay = [];
-    for (let i = 0; i < 14; i++) {
-      dutyDate = new Date(new Date(this.weekStart).setDate(this.weekStart.getDate() + i));
-      dateString = formatDate(dutyDate, 'E dd/MM', this.locale);
-      this.headerRowDay.push(dateString);
-    }
-  }
-
-  resetTableData() {
-    if (this.weekStart !== undefined && this.staffIdList && this.rotaArray$ !== undefined) {
-    //  this.rotaArray$.unsubscribe();
-      console.log('calling rosta service getdutiesfromdate');
-      this.rotaArray$ = this.rostaService.getDutiesFromDate(this.weekStart, this.staffIdList).subscribe(r => {
-        this.rotaArray = r;
-        // this.setDesplayedColumns(r);
-        // this.dataSource = new MatTableDataSource();
-        console.log('Resetting table Data');
-        this.dataSource = new MatTableDataSource<RotaRow>(this.rotaArray);
-      });
-    }
-  }
-
-  ngOnInit(): void {
-    this.rotaArray$ = this.rostaService.getDutiesFromDate(this.weekStart, this.staffIdList).subscribe(r => {
-      this.rotaArray = r;
-      this.setDesplayedColumns(r);
-      console.log('Setting table date');
-      this.dataSource = new MatTableDataSource<RotaRow>(this.rotaArray);
-    });
+  //  this.resetTableData();
   }
 
   setDesplayedColumns(ra: RotaRow[]) {
     let index1;
     const a = ra[0][1];
+    this.displayedColumns = [];
+    this.displayedColumns2 = [];
+    this.headerRowDef = ['h0'];
+    this.headerRowDef2 = [];
     this.displayedColumns.push('staff');
     for (index1 = 0; index1 < a.length; ++index1) {
       this.displayedColumns.push(index1.toString());
@@ -213,11 +230,12 @@ export class RostaStaffComponent implements OnInit, OnDestroy {
       date: dateString,
       session,
       staff: staff.staffId,
-      duty: duty.dutyId
+      duty: duty.dutyId,
+      savedBy: this.loggedInUserId
     };
     const res = this.rostaService.saveOrEditDuty(alloc).subscribe((data: any) => {
-    console.log('result from save or edit = ' + data);
-    if (data !== false) {
+      console.log('result from save or edit = ' + data);
+      if (data !== false) {
         this.resetTableData();
       }
 

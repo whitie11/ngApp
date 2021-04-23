@@ -43,7 +43,7 @@ export class RostaMainComponent implements OnInit, OnDestroy {
 
     this.weekCommencing = new Date(new Date(dt).setDate(dt.getDate() - lessDays));
 
-    this.store.dispatch(RostaActions.SetDateFrom({dateFrom: this.weekCommencing}));
+    this.store.dispatch(RostaActions.SetDateFrom({ dateFrom: this.weekCommencing }));
 
     this.staffList$ = this.rostaService.getStaffList().subscribe(list => {
       this.staffList = list;
@@ -57,9 +57,9 @@ export class RostaMainComponent implements OnInit, OnDestroy {
 
   }
 
-   restorePreferences() {
+  restorePreferences() {
     let userId = null;
-    this.user$ = this.store.select(fromAuthSelectors.getUserId).subscribe( res => {
+    this.user$ = this.store.select(fromAuthSelectors.getUserId).subscribe(res => {
       userId = res;
       this.config = {
         userId: res,
@@ -67,21 +67,21 @@ export class RostaMainComponent implements OnInit, OnDestroy {
         selected_staff: [userId]
       };
 
-      this.config$ = this.rostaService.getPreSelectedConfig(userId).subscribe( (data: Config) => {
-      console.log('get config data ', data);
-      if (data){
-      this.config = data;
-      }
-      console.log('setting Config Data ', data);
-      this.store.dispatch(RostaActions.SetDutyIdList({dutyIdList: this.config.selected_duties}));
-      this.store.dispatch(RostaActions.SetStaffIdList({staffIdList: this.config.selected_staff}));
+      this.config$ = this.rostaService.getPreSelectedConfig(userId).subscribe((data: Config) => {
+        console.log('get config data ', data);
+        if (data) {
+          this.config = data;
 
+          console.log('setting Config Data ', data);
+          this.store.dispatch(RostaActions.SetDutyIdList({ dutyIdList: this.config.selected_duties }));
+          this.store.dispatch(RostaActions.SetStaffIdList({ staffIdList: this.config.selected_staff }));
+        }
+      });
     });
- });
 
     // this.store.dispatch(RostaActions.SetDutyIdList({ dutyIdList: [1, 2] }));
     // this.store.dispatch(RostaActions.SetStaffIdList({ staffIdList: [1, 2] }));
-   }
+  }
 
   ngOnDestroy(): void {
     if (this.staffList$) {
@@ -110,7 +110,7 @@ export class RostaMainComponent implements OnInit, OnDestroy {
 
   dateChanged(wc: any) {
     console.log('W/C ' + wc);
-    this.store.dispatch(RostaActions.SetDateFrom({dateFrom: wc}));
+    this.store.dispatch(RostaActions.SetDateFrom({ dateFrom: wc }));
   }
 
   openSPDialog(): void {
@@ -121,26 +121,26 @@ export class RostaMainComponent implements OnInit, OnDestroy {
 
     dialogRefStaffPicker.afterClosed().subscribe(result => {
       console.log('Selected Staff ' + result);
-      if ( result && result.length > 0) {
-      this.store.dispatch(RostaActions.SetStaffIdList({ staffIdList: result }));
-      this.config.selected_staff = result;
-      this.rostaService.setPreSelectedConfig(this.config);
-    }
+      if (result && result.length > 0) {
+        this.store.dispatch(RostaActions.SetStaffIdList({ staffIdList: result }));
+        this.config.selected_staff = result;
+        this.rostaService.setPreSelectedConfig(this.config);
+      }
     });
   }
 
-    openDutyPickerDialog(): void {
+  openDutyPickerDialog(): void {
     const dialogRefDutyPicker = this.dialog.open(LocationPickerDialogComponent, {
       width: '450px',
       data: this.dutyList
     });
 
     dialogRefDutyPicker.afterClosed().subscribe(result => {
-      if ( result && result.length > 0) {
-      this.store.dispatch(RostaActions.SetDutyIdList({ dutyIdList: result }));
-      this.config.selected_duties = result;
-      this.rostaService.setPreSelectedConfig(this.config);
-    }
+      if (result && result.length > 0) {
+        this.store.dispatch(RostaActions.SetDutyIdList({ dutyIdList: result }));
+        this.config.selected_duties = result;
+        this.rostaService.setPreSelectedConfig(this.config);
+      }
     });
   }
 
