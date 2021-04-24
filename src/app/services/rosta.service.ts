@@ -52,6 +52,7 @@ export class RostaService implements OnDestroy {
     const url = `${this.BASE_URL}/rosta/duty_list/`;
     // const weekStartStr = weekStart.toISOString().split('T')[0];
     const weekStartStr = this.convertDate(weekStart);
+    console.log(weekStartStr);
     return this.http.post<any>(url, { weekStartStr, staffList });
   }
 
