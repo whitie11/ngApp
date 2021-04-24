@@ -36,15 +36,29 @@ export class RostaService implements OnDestroy {
     }
   }
 
+   convertDate(date: Date) {
+    const yyyy = date.getFullYear().toString();
+    const mm = (date.getMonth() + 1).toString();
+    const dd  = date.getDate().toString();
+
+    const mmChars = mm.split('');
+    const ddChars = dd.split('');
+
+    return yyyy + '-' + (mmChars[1] ? mm : '0' + mmChars[0]) + '-' + (ddChars[1] ? dd : '0' + ddChars[0]);
+  }
+
+
   public getDutiesFromDate(weekStart: Date, staffList: number[]): Observable<RotaRow[]> {
     const url = `${this.BASE_URL}/rosta/duty_list/`;
-    const weekStartStr = weekStart.toISOString();
+    // const weekStartStr = weekStart.toISOString().split('T')[0];
+    const weekStartStr = this.convertDate(weekStart);
     return this.http.post<any>(url, { weekStartStr, staffList });
   }
 
   public getStaffPerDutyFromDate(weekStart: Date, dutyIdArray: number[]): Observable<RotaRowDutyView[]> {
     const url = `${this.BASE_URL}/rosta/duty_staff/`;
-    const weekStartStr = weekStart.toISOString();
+    // const weekStartStr = weekStart.toISOString();
+    const weekStartStr = this.convertDate(weekStart);
     return this.http.post<any>(url, { weekStartStr, dutyIdArray });
   }
 
