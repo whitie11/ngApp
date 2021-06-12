@@ -14,6 +14,8 @@ import { Config } from '../../models/config';
 import { take } from 'rxjs/operators';
 // import { Console } from 'console';
 import { MatTabChangeEvent } from '@angular/material/tabs';
+import { WebsocketService } from 'src/app/services/websocket.service';
+import { MessageTest } from 'src/app/models/messageTest';
 
 
 @Component({
@@ -34,10 +36,13 @@ export class RostaMainComponent implements OnInit, OnDestroy {
 
   @ViewChild('tabs') tabs: any;
   selectedIndex = 0;
+  recievedMsg = '';
 
   constructor(public dialog: MatDialog,
               private rostaService: RostaService,
-              private store: Store<AppState>) {
+              private store: Store<AppState>,
+              private webService: WebsocketService,
+              ) {
 
 
     const dt = new Date(); // current date of week
@@ -105,6 +110,16 @@ export class RostaMainComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.webService.sendMessage('Hello');
+    this.webService.onNewMessage().subscribe((msg: MessageTest) => {
+      console.log('got a msg: ' + msg);
+      this.recievedMsg = msg.message;
+      console.log('got a msg: ' + this.recievedMsg);
+      // if (this.recievedMsg != '' {
+      //   this.resetTabs();
+      // }
+      
+    });
   }
 
   // onTabChange($event: MatTabChangeEvent){

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { WebsocketService } from 'src/app/services/websocket.service';
 
 @Component({
   selector: 'app-rosta',
@@ -17,6 +18,7 @@ export class RostaComponent implements OnInit {
     const currentWeekDay = dt.getDay();
     const lessDays = currentWeekDay === 0 ? 6 : currentWeekDay - 1;
     this.weekCommencing = new Date(new Date(dt).setDate(dt.getDate() - lessDays));
+
   }
 
   ngOnInit(): void {
