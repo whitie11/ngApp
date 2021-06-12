@@ -10,15 +10,19 @@
       >
       <!-- <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle> -->
       <mat-datepicker #picker startView="month"></mat-datepicker>
+      
+      <span>Update notice goes here!</span>
       <button class="button-width" mat-raised-button (click)="picker.open()">Change Date</button>
       <button class="button-width" mat-raised-button  (click)="openSPDialog()">Staff List</button>
       <button class="button-width" mat-raised-button  (click)="openDutyPickerDialog()">Duty List</button>
-     
+      <button class="button-width" mat-raised-button  (click)="resetTabs()">Refresh</button>
       <span class="spacer"></span>
+
   </mat-toolbar>
 
-<mat-tab-group>
-  <mat-tab label="Staff View">
+<mat-tab-group #tabs [(selectedIndex)]="selectedIndex">
+  <mat-tab></mat-tab> <!-- ADDITIONAL TAB -->
+  <mat-tab label="Staff View" >
     <ng-template matTabContent>
         <app-rosta-staff></app-rosta-staff>
     </ng-template>
@@ -29,4 +33,6 @@
     </ng-template>
   </mat-tab>
 </mat-tab-group>
+
+
 

@@ -5,6 +5,7 @@ import { AppState } from 'src/app/store/app.states';
 
 import * as AuthActions from '../../../../store/auth/auth.actions';
 import * as fromAuthSelectors from '../../../../store/auth/auth.selectors';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',

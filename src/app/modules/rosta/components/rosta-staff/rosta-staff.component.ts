@@ -110,6 +110,7 @@ export class RostaStaffComponent implements OnInit, OnDestroy {
 
     this.staffIdList$ = this.store.select(fromRostaSelectors.staffIdsFromStore).subscribe(s => {
       this.staffIdList = s;
+      console.log('stafflist roster-staff', s);
       this.resetTableData();
     });
 

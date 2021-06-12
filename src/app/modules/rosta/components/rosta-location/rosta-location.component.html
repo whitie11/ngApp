@@ -1,8 +1,10 @@
 <div class="table-container">
+  
   <div *ngIf="waiting">
     <h1>Refreshing Data: please wait...</h1>
     <mat-spinner style="margin:0 auto;" ></mat-spinner>
   </div>
+
   <table  *ngIf="!waiting" mat-table #table [dataSource]="dataSource" class="mat-elevation-z8">
 
     <ng-container matColumnDef="duty">

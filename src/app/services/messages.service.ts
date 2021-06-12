@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { MyMessage } from '../modules/messages/models/message';
@@ -8,9 +8,10 @@ import { NewMessageData } from '../modules/messages/models/newMessageData';
 @Injectable({
   providedIn: 'root'
 })
-export class MessagesService {
+export class MessagesService  {
   private BASE_URL = environment.urls.BASE_URL;
   constructor(private http: HttpClient) { }
+
 
   public  getAllMessages(): Observable<MyMessage[] > {
     const url = `${this.BASE_URL}/messages/all_messages/`;

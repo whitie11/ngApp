@@ -25,3 +25,7 @@
   .dateInput {
     padding-left: 10px;
   }
+
+  ::ng-deep .mat-tab-labels > .mat-tab-label:first-child {
+    display: none;
+  }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription } from 'rxjs';
@@ -12,6 +12,8 @@ import { LocationPickerDialogComponent } from '../location-picker-dialog/locatio
 import { Duty } from '../../models/duty';
 import { Config } from '../../models/config';
 import { take } from 'rxjs/operators';
+// import { Console } from 'console';
+import { MatTabChangeEvent } from '@angular/material/tabs';
 
 
 @Component({
@@ -29,6 +31,9 @@ export class RostaMainComponent implements OnInit, OnDestroy {
   config!: Config;
   config$!: Subscription;
   user$!: Subscription;
+
+  @ViewChild('tabs') tabs: any;
+  selectedIndex = 0;
 
   constructor(public dialog: MatDialog,
               private rostaService: RostaService,
@@ -49,8 +54,8 @@ export class RostaMainComponent implements OnInit, OnDestroy {
       this.staffList = list;
     });
 
-    this.dutyList$ = this.rostaService.getDutyList().subscribe(list => {
-      this.dutyList = list;
+    this.dutyList$ = this.rostaService.getDutyList().subscribe(list2 => {
+      this.dutyList = list2;
     });
 
     this.store.dispatch(RostaActions.GetDuties());
@@ -100,6 +105,23 @@ export class RostaMainComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+  }
+
+  // onTabChange($event: MatTabChangeEvent){
+  //   console.log('selected event= ;', $event);
+  //   console.log('selected index = ;', this.tabs.selectedIndex);
+  // }
+
+  resetTabs(){
+    console.log('selected index = ;', this.tabs.selectedIndex);
+    const x = this.tabs.selectedIndex;
+    this.selectedIndex = 0;
+    console.log(this.tabs.selectedIndex);
+    setTimeout(() => {
+      console.log('sleep');
+      this.selectedIndex = x;
+    }, 1000);
+    console.log(this.tabs.selectedIndex);
   }
 
   myFilter = (d: Date | null): boolean => {

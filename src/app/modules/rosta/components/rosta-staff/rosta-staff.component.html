@@ -56,6 +56,8 @@
     <ng-template matMenuContent let-staff="staff" let-col="col">
       <span style="background-color:rgb(248, 229, 229)" >Select Duty for {{selectedUserDateStr}}</span>
 
+      <button mat-menu-item>Show history</button>
+      <mat-divider></mat-divider>
       <button mat-menu-item
       *ngFor="let k = index; let duty of duties" 
       (click)="menuClick(staff, col, duty)"

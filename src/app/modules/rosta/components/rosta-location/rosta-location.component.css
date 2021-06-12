@@ -8,7 +8,7 @@ table {
   .table-container {
     max-height:450px;
     overflow: auto;
-    background-color: rgb(255, 170, 170)
+    /* background-color: rgb(255, 170, 170) */
   }
 
   .make-red {
